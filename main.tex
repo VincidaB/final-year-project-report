@@ -1,0 +1,243 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+
+% Set page size and margins
+% Replace `letterpaper' with`a4paper' for UK/EU standard size
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\usepackage{glossaries}
+\usepackage{subfigure}
+
+\makenoidxglossaries
+
+
+\loadglsentries{lexique}
+
+
+\usepackage{xcolor}
+
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning}
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{listings}
+\newcommand{\hilight}{\makebox[0pt][s]{\color{green!50}\rule[-3.6pt]{1.0\linewidth}{12pt}}}
+
+\usepackage{tikz}
+
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\lstdefinestyle{command}{
+  backgroundcolor=\color{white},
+  basicstyle=\ttfamily\color{black},
+  keywordstyle=\color{blue},
+  commentstyle=\color{mygray},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  upquote=true,
+  morekeywords={sudo, ls, cd, mv, cp, rm, mkdir, chmod, chown, grep, find},
+  captionpos=b,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{mygray},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=2,
+  keepspaces=true,
+  caption={Linux Command},
+  label=command,
+}
+\lstdefinestyle{bashstyle}{
+  backgroundcolor=\color{white},
+  basicstyle=\ttfamily\color{black},
+  keywordstyle=\color{blue},
+  commentstyle=\color{mygray},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  upquote=true,
+  morekeywords={sudo, ls, cd, mv, cp, rm, mkdir, chmod, chown, grep, find},
+  captionpos=b,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{mygray},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=2,
+  keepspaces=true,
+  caption={Script bash},
+  label=command,
+}
+
+\lstdefinestyle{cstyle}{
+    language=C,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!40!black},
+    stringstyle=\color{red},
+    identifierstyle=\color{black},
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    morekeywords={int, char, void, if, else, while, for, return, typedef, struct, include},
+    columns=flexible
+}
+
+\lstdefinestyle{makefilestyle}{
+    language=make,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!40!black},
+    captionpos=b,
+    stringstyle=\color{red},
+    identifierstyle=\color{black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    morekeywords={ifeq, endif, else, ifdef, ifndef, define, endef, export, unexport, obj},
+    columns=flexible
+}
+\lstdefinestyle{config}{
+    language=make,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!40!black},
+    captionpos=b,
+    stringstyle=\color{red},
+    identifierstyle=\color{black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    morekeywords={ifeq, endif, else, ifdef, ifndef, define, endef, export, unexport, obj},
+    columns=flexible
+}
+
+\bibliographystyle{plain} % We choose the "plain" reference style
+
+\renewcommand{\epsilon}{\varepsilon} 
+\renewcommand{\phi}{\varphi} 
+\title{Final year project report\vspace{10pt}\\**************************************************\\Le titre cest important \\
+deuxieme ligne du titre\vspace{10pt} \\**************************************************}
+\author{BELPOIS Vincent \\ Under the sipervision of Dr. Ivan \textsc{Mutis}}
+
+\begin{document}
+
+\date{2024}
+\maketitle
+\thispagestyle{empty}
+
+\vspace{10mm}
+
+    \begin{center}
+    \includegraphics[width = 6cm]{Images/logo_ensma.png}
+    \end{center}
+    \vspace{2cm}
+    \begin{center}
+        \includegraphics[width = 8cm]{Images/IIT_Logo_stack_186_blk.png}
+    \end{center}
+    \newpage
+    \thispagestyle{empty}
+    \mbox{}
+    
+    
+
+    
+    \AddToShipoutPictureBG{%
+    \put(15,7){\includegraphics[scale = 0.02]{Images/logo_ensma.png}}
+    \put(480,10){\includegraphics[width = 100pt]{Images/IIT_Logo_stack_186_blk.png}}
+    
+    }
+
+
+
+    \newpage
+    \section*{Acknowledgments}
+
+        Acknowledgments
+        
+    \newpage
+    \thispagestyle{empty}
+    \mbox{}
+    \newpage
+    \thispagestyle{empty}
+    {\small \tableofcontents}
+
+    \newpage
+    \thispagestyle{empty}
+    \mbox{}
+    \newpage
+    
+    \section{Introduction}
+    
+        Introduction    
+
+        $$
+        \int_\alpha^\beta f(x) dx
+        $$
+        \cite{xu2022fast}
+
+
+    \newpage
+    
+    \section[smol title]{big title}
+    \label{section:big title}%label to reference section
+
+        text to introduce section
+    
+        \subsection{Présentation de la carte de développement}
+    \newpage
+    \section{Conclusion}
+    %\addcontentsline{toc}{section}{Conclusion}
+
+        Conclusion     
+
+    \newpage
+    \bibliography{refs} % Entries are in the refs.bib file
+    \addcontentsline{toc}{section}{bibliography}
+
+    \newpage
+    \addcontentsline{toc}{section}{Glossaire}
+    \printnoidxglossaries %glossaire, dans le fichier lexique.tex
+
+    \newpage
+    \addcontentsline{toc}{section}{List of figures}
+    \listoffigures
+
+
+    \newpage
+    \section*{Annexe}
+    \addcontentsline{toc}{section}{Annexe}
+    Uncomment input annexe when needed
+    %\input{annexe}
+
+
+
+    
+\end{document}
