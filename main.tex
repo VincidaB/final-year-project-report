@@ -255,7 +255,7 @@ for civil enginering progress tracking\vspace{10pt} \\**************************
                 Difficulties were encountered when trying to use the drivers someone else tried before hand as they were underpowered : at stall, the motors required around 5 amps, as measured with a bench top power supply, and the drivers I was trying to use were only capable of delivering 2 amps per channel or a total of 4 amps when combining outputs. The drivers in question were the \color{red} INSERT REFERENCE \color{black} which were in terms replaced by the driver \color{red} INSERT REFERENCE \color{black}. A physical comparaison can be seen in \ref{fig:drivers_compraison}
                 
                 
-                \begin{figure}
+                \begin{figure}[h]
                     \centering
                     INSERT (a) (b) PICTURE OF BOTH DRIVERS
                     \label{fig:drivers_compraison}
@@ -264,13 +264,13 @@ for civil enginering progress tracking\vspace{10pt} \\**************************
                 The three motor drivers were connected to microcontroller. The connection can be seen in \ref{fig:driver_to_pico}.
                 I chose to use a Raspberry pi Pico microcontroller for it's many outputs at a total of \color{red} XX general purpose input outputs (GPIO) \color{black}. Each driver required 6 control signals or 3 per motor : Two signals are used to control the direction of the motor according to table \color{red} MAKE AND CITE TABLE DIR \color{black} while the third signal's duty cycle determine the speed.
 
-                A radio control (RC) receiver was also connected to interupt capable GPIOs of the micrcontoller to be able to control the platform manually. Three channels of the RC receiver were used to control the speed, the direction and the mode of the platform. The mode refers to whether or not the platform is in manual control or in autonomous mode and is connected to channel 5 of the radio wich has a two way switch.
+                A radio control (RC) receiver was also connected to interupt capable GPIOs of the microcontroller to be able to control the platform manually. Three channels of the RC receiver were used to control the speed, the direction and the mode of the platform. The mode refers to whether or not the platform is in manual control or in autonomous mode and is connected to channel 5 of the radio wich has a two way switch.
 
                 Finally, the pico is connected to an Nvidia Jetson Orin single board computer (SBC) via USB. This connection is used both to reprogram the pico, as well as to send speed and direction commands to each motor via a serial communication. 
 
                 Not including the power distribution and regulation system, \ref{fig:overall_electical_system} shows the electrical connections of these components on the modified six-wheeled platform.
 
-                \begin{figure}
+                \begin{figure}[h]
                     \centering
                     OVERALL ELECTRICAL SYSTEM (excluding power)
                     \label{fig:overall_electical_system}
@@ -279,7 +279,7 @@ for civil enginering progress tracking\vspace{10pt} \\**************************
 
                 
                 
-                \begin{figure}
+                \begin{figure}[h]
                     \centering
                     Driver to PICO connection diagram
                     \label{fig:driver_to_pico}
@@ -287,13 +287,29 @@ for civil enginering progress tracking\vspace{10pt} \\**************************
 
             
             
-                \subsubsection{Software architecture}
+            \subsubsection{Software architecture}
+
+            How the software on the jetson communicates with the microcontroller and how it communcates with the lidar. The choice of the odometry algorithm will be explain in another section (master, comparaison of multiple algo)
+
 
             \subsubsection{ROS 2 setup}
+            What nodes did I create, explain the setup with nav2 working.
+
+            
             \subsubsection{Issues encountered}
+                
+            explain the state reached (nav2 navigation kinda working) and why the other platform was created
+
+            \begin{figure}[H]
+                \centering 
+                \subfigure[Version 1 of the rover]{\includegraphics[width=0.4\textwidth, angle=270]{Images/roverv1closed.jpg}}
+                \subfigure[Version 2 of the rover]{\includegraphics[width=0.4\textwidth, angle=270]{Images/roverv2openened.jpg}}       
+            \end{figure}
 
 
-        \subsection{Quadcopter setup}
+            Explain how the chassis was designed to fit the new closed loop, motors
+`
+        \subsection{Quadcopter setup}`
                 
                 Explain the platform's starting point and the goal
                 Explain the different drones that were at my disposition
@@ -307,6 +323,20 @@ for civil enginering progress tracking\vspace{10pt} \\**************************
                 \subsubsection{Issues encountered}
                 
                 \subsection{Quadruped platform setup}
+
+
+                \subsubsection{Mechanical modifications}
+
+                How the top part was scanned to be replaced for a jetson, and a lidar to be mounted
+
+                \subsubsection{Compute backpack}
+
+                Explain how the jetson, the lidar and the robot communicate.
+
+                \subsubsection{Issues encountered}
+
+                Big battery issue, reverse engineering of the battery
+
         \newpage
 
     \section{Simulation}
