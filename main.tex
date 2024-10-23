@@ -310,12 +310,15 @@ for civil engineering progress tracking\vspace{10pt} \\*************************
 
             \subsubsection{ROS 2 setup}
             
-            %What nodes did I create, explain the setup with nav2 working.
-
+            % What nodes did I create, explain the setup with nav2 working.
+            
 
             \subsubsection{Issues encountered}
                 
-            Explain the state reached (nav2 navigation kinda working) and why the other platform was created
+            %Explain the state reached (nav2 navigation kinda working) and why the other platform was created
+
+            The 6-wheeled rover, with its stainless steel frame and weak DC motors lacking encoders, was not the most suitable platform for the task of autonomous navigation. The lack of encoders on the motors made odometry calculations based on the lidar and inertial measurement unit unreliable. An attempt was made to do closed-loop control with the aforementioned odometry, but the noise and the lack of per-wheel odometry made it impossible to have a stable and reliable control. I then decided to create a new platform using closed-loop stepper motors, also called servos. Their closed-loop control and high torque at low speed would make them ideal for slow movements, thereby making the task of autonomous navigation feasible.
+
 
             \begin{figure}[H]
                 \centering 
@@ -324,8 +327,8 @@ for civil engineering progress tracking\vspace{10pt} \\*************************
             \end{figure}
 
 
-            Explain how the chassis was designed to fit the new closed loop, motors
-`
+            %Explain how the chassis was designed to fit the new closed loop, motors
+
         \subsection{Quadcopter setup}
                 
                 % Explain the platform's starting point and the goal
@@ -373,7 +376,7 @@ for civil engineering progress tracking\vspace{10pt} \\*************************
 
             As is the case with the wheeled platform and the drone, we chose to use a Livox Mid-360 lidar and a Nvidia Jetson Orin embedded computer. Even though the quadruped already carries a 3D Lidar, we chose to use a Mid-360 to have a more accurate 3D map and to standardize the platforms.
 
-
+            
             \begin{figure}[H]
                 \centering
                 IMAGE OF COMPUTE BACKPACK
@@ -384,11 +387,15 @@ for civil engineering progress tracking\vspace{10pt} \\*************************
                 \centering
                 IMAGE OF SCANNER AND SCANNED TOP OF ROBOT
             \end{figure}
+            
+            \subsubsection{Comminucation with the quadruped}
+
+            % explain how we use webRTC to communicate with the robot (explain whatit is and how it works)
+            % explain how we could use the cyclondeDDS if we had access to it (jailbreak)
 
             \subsubsection{Issues encountered}
 
             Big battery issue, reverse engineering of the battery
-
 
             \begin{figure}[H]
                 \centering
