@@ -398,11 +398,11 @@ for Continuous Digital Rwin Creation\vspace{10pt}\\
             \subsubsection{Comminucation with the quadruped}
 
             % explain how we use webRTC to communicate with the robot (explain whatit is and how it works)
-            % explain how we could use the cyclondeDDS if we had access to it (jailbreak)
+            % explain how we could use the cyclondeDDS because we have access to the newly jailbreaked robot
 
             \subsubsection{Issues encountered}
 
-            Big battery issue, reverse engineering of the battery
+            Big battery issue, reverse engineering of the battery, jailbreaking of the robot
 
             \begin{figure}[H]
                 \centering
@@ -416,17 +416,24 @@ for Continuous Digital Rwin Creation\vspace{10pt}\\
         \subsection{Mapping}
             \subsubsection{Introduction to SLAM}
             \subsubsection{Comparison of odometry algorithms}
-
+            \subsubsection{Lidar inertial odometry}
+            \subsubsection{Terrain analysis}
+            % explain the two terrain analysis we do on the acquired point cloud
         \subsection{Planning}
             \subsubsection{Path planning}
             \subsubsection{2D path planning}
+            % Using nav2 as a base and how we convert from a 3D point cloud to a 2D one 
             \subsubsection{Comparison of 3D planning algorithms}
 
         \subsection{Exploration}
             \subsubsection{Metrics for exploration}
+            % show how we calculate the exploration rate using the tools provided in the TARE planner
             \subsubsection{TARE-PLANNER}
             \subsubsection{MTARE-PLANNER}
+            % multi agent exploration
             \subsubsection{Comparison of exploration algorithms}
+            % metion the other exploration planners that are mentioned in the literature and how they compare to TARE and MTARE
+
 
     \newpage
     \section{Simulation}
