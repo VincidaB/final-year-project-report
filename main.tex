@@ -43,6 +43,10 @@
 \newcommand{\hilight}{\makebox[0pt][s]{\color{green!50}\rule[-3.6pt]{1.0\linewidth}{12pt}}}
 
 \usepackage{tikz}
+\usepackage{listofitems} % for \readlist to create arrays
+
+\tikzstyle{mynode}=[thick,draw=blue,fill=blue!20,circle,minimum size=22]
+
 
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \lstdefinestyle{command}{
@@ -203,7 +207,23 @@ for Continuous Digital Rwin Creation\vspace{10pt}\\
     
     \section{Introduction}
     
-        Introduction    
+    \begin{tikzpicture}[x=2.2cm,y=1.4cm]
+        \readlist\Nnod{4,5,4,5,3,2} % number of nodes per layer
+        % \Nnodlen = length of \Nnod (i.e. total number of layers)
+        % \Nnod[1] = element (number of nodes) at index 1
+        \foreachitem \N \in \Nnod{ % loop over layers
+          % \N     = current element in this iteration (i.e. number of nodes for this layer)
+          % \Ncnt  = index of current layer in this iteration
+          \foreach \i [evaluate={\x=\Ncnt; \y=\N/2-\i+0.5; \prev=int(\Ncnt-1);}] in {1,...,\N}{ % loop over nodes
+            \node[mynode] (N\Ncnt-\i) at (\x,\y) {};
+            \ifnum\Ncnt>1 % connect to previous layer
+              \foreach \j in {1,...,\Nnod[\prev]}{ % loop over nodes in previous layer
+                \draw[thick] (N\prev-\j) -- (N\Ncnt-\i); % connect arrows directly
+              }
+            \fi % else: nothing to connect first layer
+          }
+        }
+      \end{tikzpicture}
 
         $$
         \int_\alpha^\beta f(x) dx
@@ -216,7 +236,7 @@ for Continuous Digital Rwin Creation\vspace{10pt}\\
     \section[Setting up the physical agents]{Setting up the physical agents}
     \label{section:big title}%label to reference section
 
-        Three platforms were used in this project, a six wheeled platform, a quadcopter and a quadruped platform. Each platform was chosen for its specific characteristics and the goal was to have a multi agent system that could explore a scene and map it. The six wheeled platform was chosen for its stability and its ability to carry heavy loads. The quadcopter was chosen for its ability to fly and to have a bird's eye view of the scene. The quadruped platform was chosen for its ability to climb stairs and to have a low center of gravity.
+        Three platforms were used in this project, a six wheeled platform, a quadcopter and a quadruped platform. Each platform was chosen for its specific characteristics and the goal was to have a multi agent system that could explore and map a scene. The six wheeled platform was chosen for its stability and its ability to carry heavy loads. The quadcopter was chosen for its ability to fly and to have a bird's eye view of the scene. The quadruped platform was chosen for its ability to climb stairs and navigate bumpy terrain.
 
     
         \subsection{Six wheeled platform setup}
@@ -254,7 +274,7 @@ for Continuous Digital Rwin Creation\vspace{10pt}\\
             \subsubsection{Electronics architecture}
                 The essential electronic components needed to get the platform running were mainly DC motor drivers to drive the motors, a Lidar sensor and an embedded computer.
                 
-                Difficulties were encountered when trying to use the drivers someone else tried before hand as they were underpowered : at stall, the motors required around 5 amps, as measured with a bench top power supply, and the drivers I was trying to use were only capable of delivering 2 amps per channel or a total of 4 amps when combining outputs. The drivers in question were the \color{red} INSERT REFERENCE \color{black} which were in terms replaced by the driver \color{red} INSERT REFERENCE \color{black}. A physical comparison can be seen in \ref{fig:drivers_compraison}
+                Difficulties were encountered when trying to use the drivers someone else tried before hand as they were underpowered : at stall, the motors required around 5 amps, as measured with a bench top power supply, and the drivers I was trying to use were only capable of delivering 2 amps per channel or a total of 4 amps when combining outputs. The drivers in question were the based on the LN298N which were in terms replaced by the 7A dual motor drivers from DFRobot. A physical comparison can be seen in \ref{fig:drivers_comparison}
                 
                 Difficulties were encountered when trying to use the drivers someone else tried before hand as they were underpowered : at stall, the motors required around 5 amps, as measured with a bench top power supply, and the drivers I was trying to use were only capable of delivering 2 amps per channel or a total of 4 amps when combining outputs. The drivers in question were the L298N H-bridge motor drivers, which were ultimately replaced by the DFRobot 7A Dual DC Motor Driver. The L298N drivers, while popular for smaller projects, proved inadequate for the power requirements of our six-wheeled platform. In contrast, the DFRobot 7A Dual DC Motor Driver offer a continuous current output of 7A per channel, more than sufficient for our needs. This upgrade significantly improved the platform's performance, allowing for smoother operation and better handling of the motor's power demands. A physical comparison of these drivers can be seen in Figure.\ref{fig:drivers_comparison}.
 
@@ -266,8 +286,8 @@ for Continuous Digital Rwin Creation\vspace{10pt}\\
                     \label{fig:drivers_comparison}
                 \end{figure}
 
-                The three motor drivers were connected to microcontroller. The connection can be seen in \ref{fig:driver_to_pico}.
-                I chose to use a Raspberry pi Pico microcontroller for it's many outputs at a total of \color{red} XX general purpose input outputs (GPIO) \color{black}. Each driver required 6 control signals or 3 per motor : Two signals are used to control the direction of the motor according to table \color{red} MAKE AND CITE TABLE DIR \color{black} while the third signal's duty cycle determine the speed.
+                The three motor drivers were connected to a microcontroller. The connection can be seen in \ref{fig:driver_to_pico}.
+                I chose to use a Raspberry Pi Pico microcontroller for its many outputs, totaling 26 general purpose input outputs (GPIO). Each driver required 6 control signals or 3 per motor: two signals are used to control the direction of the motor according to Table \ref{tab:motor_control}, while the third signal's duty cycle determines the speed.
 
                 A radio control (RC) receiver was also connected to interrupt capable GPIOs of the microcontroller to be able to control the platform manually. Three channels of the RC receiver were used to control the speed, the direction and the mode of the platform. The mode refers to whether or not the platform is in manual control or in autonomous mode and is connected to channel 5 of the radio which has a two way switch.
 
@@ -275,6 +295,22 @@ for Continuous Digital Rwin Creation\vspace{10pt}\\
 
                 Not including the power distribution and regulation system, \ref{fig:overall_electical_system} shows the electrical connections of these components on the modified six-wheeled platform.
 
+
+                \begin{table}[h!]
+                    \centering
+                    \begin{tabular}{|c|c|c|c|}
+                    \hline
+                    IN1 & IN2 & ENA/ENB & Motor1/2 Behavior \\ \hline
+                    0   & 0   & x       & Stop (brake)      \\ \hline
+                    1   & 1   & x       & Vacant            \\ \hline
+                    1   & 0   & 1       & Forward 100\%     \\ \hline
+                    0   & 1   & 1       & Reverse 100\%     \\ \hline
+                    1   & 0   & PWM     & Forward at PWM speed \\ \hline
+                    0   & 1   & PWM     & Reverse at PWM speed \\ \hline
+                    \end{tabular}
+                    \caption{Motor Control Table}
+                    \label{tab:motor_control}
+                \end{table}
 
                 %! Add a reference to this figure !!
                 \begin{figure}[H]
@@ -299,9 +335,9 @@ for Continuous Digital Rwin Creation\vspace{10pt}\\
             
             \subsubsection{Software architecture}
 
-            How the software on the jetson communicates with the microcontroller and how it communicates with the lidar. The choice of the odometry algorithm will be explain in another section (master, comparison of multiple algo)
+            %How the software on the jetson communicates with the microcontroller and how it communicates with the lidar. The choice of the odometry algorithm will be explain in another section (master, comparison of multiple algo)
 
-            The robot operation system (ROS) was chosen as the software framework for the platform running on the Jetson Orin embedded computer. Specifically, ROS2 Humble Hawksbill was selected due to its extensive package availability and compatibility with the Jetson Orin's hardware. Indeed, as I as made aware of the strugles of someone else running a ROS based robot on an Nvidia Jetson Nano and how Ubuntu, and ROS version mismatch may bring problems. 
+            The robot operation system (ROS) was chosen as the software framework for the platform running on the Jetson Orin embedded computer. Specifically, ROS2 Humble Hawksbill was selected due to its extensive package availability and compatibility with the Jetson Orin's hardware. Indeed, I was made aware of the strugles of another researcher running a ROS based robot on an Nvidia Jetson Nano and how Ubuntu, and ROS version mismatch may bring problems. 
             
             This version of ROS2 provides a robust and flexible framework for developing and integrating various components of the platform, including sensor processing, navigation, and control. For real-time critical tasks such as motor control and RC radio interrupts, the Raspberry Pi Pico microcontroller was utilized, leveraging its ability to handle low-level, time-sensitive operations. The microcontroller's firmware was developed from the ground up by myself, guaranteeing reliable execution of motor control and interrupt handling tasks. By combining the strengths of ROS2 on the Jetson Orin with the real-time capabilities of the Raspberry Pi Pico, the platform achieves a robust and efficient software architecture that enables seamless integration of autonomous navigation, sensor processing, and manual control.
 
@@ -375,25 +411,44 @@ for Continuous Digital Rwin Creation\vspace{10pt}\\
 
             \subsubsection{Mechanical modifications}
 
-            How the top part was scanned to be replaced for a jetson, and a lidar to be mounted
+            % How the top part was scanned to be replaced for a jetson, and a lidar to be mounted
+            Even though the Unitree GO2 has a LIDAR of it's own and an embeded computer based on the Rockchip RK3588S inside, we decided to add an aditional LIDAR on top of the platform and as such needed an anitional embedded computer. 
 
             \subsubsection{Compute backpack}
 
-            Explain how the jetson, the lidar and the robot communicate.
+            % Explain how the jetson, the lidar and the robot communicate.
 
-            As is the case with the wheeled platform and the drone, we chose to use a Livox Mid-360 lidar and a Nvidia Jetson Orin embedded computer. Even though the quadruped already carries a 3D Lidar, we chose to use a Mid-360 to have a more accurate 3D map and to standardize the platforms.
+            As is the case with the wheeled platform and the drone, we chose to use a Livox Mid-360 lidar and a Nvidia Jetson Orin embedded computer. Even though the quadruped already carries a 3D Lidar, we chose to use a Mid-360 as the ladder produces around ten times more points per second (21600 points per second for the Unitree L1 Lidar against the 200000 points per second of the MID-360).
 
-            
+            The compute backpack also provides access to a power port with a connnector Amass XT-30 and a gigabit ethernet port on the robot that are usually covered by a plastic cover. Those ports are covered by the handle of the GO2 as can be seen in the figure \ref{fig:handle_cover}.  
+
+                
+            \begin{figure}[h]
+                \centering
+                IMAGE OF HANDLE AND COVERED CONNECTORS
+                \caption{Handle and covered connectors}
+                \label{fig:handle_cover}
+            \end{figure}
+
+
+            To fit Nvidia Jetson, the LIDAR, and the power regulators needed for both of them, the top part of the robot was scanned and a new top part was designed and 3D printed. The CAD model of top part and the scan can be seen in figure \ref{fig:scanner_and_cad}.
+
+            \begin{figure}[H]
+                \centering
+                IMAGE OF SCANNER AND SCANNED TOP OF ROBOT
+                \caption{Scanned top and CAD model of the comput backpack shell}
+                \label{fig:scanner_and_cad}
+            \end{figure}
+
+
+
+
             \begin{figure}[H]
                 \centering
                 IMAGE OF COMPUTE BACKPACK
             \end{figure}
 
 
-            \begin{figure}[H]
-                \centering
-                IMAGE OF SCANNER AND SCANNED TOP OF ROBOT
-            \end{figure}
             
             \subsubsection{Comminucation with the quadruped}
 
