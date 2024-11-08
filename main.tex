@@ -31,8 +31,7 @@
 \loadglsentries{lexique}
 
 
-\usepackage{xcolor}
-
+\usepackage[table,xcdraw]{xcolor}
 \usepackage{eso-pic}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning}
@@ -44,6 +43,7 @@
 
 \usepackage{tikz}
 \usepackage{listofitems} % for \readlist to create arrays
+
 
 \tikzstyle{mynode}=[thick,draw=blue,fill=blue!20,circle,minimum size=22]
 
@@ -387,7 +387,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
                     I designed and 3D printed new landing legs that fit on the arms of the quadcopter. Those landing legs were designed to increase the landing stability, which I noticed was a problem in the manual flight I performed, and to reduce the blindspots of the lidar which was to be placed on the center of the underside of the drone.
 
-                    I also took the oportunity to redisgne the battery mounting mechanism which was hbulky, heavy, and suitable to only one size of battery to one that is much simpler and uses velcro straps as can been seen in Figure \ref{fig:landing_legs}.
+                    I also took the oportunity to redisgne the battery mounting mechanism which was bulky, heavy, and suitable to only one size of battery to one that is much simpler and uses velcro straps as can been seen in Figure \ref{fig:landing_legs}. This resulted in a saving of \color{red} XXX grams \color{black} and thus increased the flight time of the drone. 
                     
 
                     \begin{figure}[H]
@@ -401,24 +401,21 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
                     % Similarly to the rover, the jetson is still connected to the LIDAR via ethernet 
                     % The drone is controlled by a PLACEHOLDER_CONTROLLER, which is connected to the jetson via USB
 
-                    To keep the architecture similar to the one used on the wheeled robot, 
+                    To keep the architecture similar to the one used on the wheeled robot, the quadcopter was also equipped with an Nvidia Jetson Orin embedded computer and a Livox MID-360 LIDAR. The computer and the lidar get their power from the drone's battery, which is regulated to 19V and 12V respectively.
 
                 \subsubsection{Software architecture and setup}
-    
+                    
+                    % don't know what planner to use, something complicated or just a grid coverage planner
             
                 \subsubsection{Issues encountered}
                 
         \subsection{Quadruped platform setup}
 
-
-            \subsubsection{Mechanical modifications}
-
-            % How the top part was scanned to be replaced for a jetson, and a lidar to be mounted
-            Even though the Unitree GO2 has a LIDAR of it's own and an embeded computer based on the Rockchip RK3588S inside, we decided to add an aditional LIDAR on top of the platform and as such needed an anitional embedded computer. 
+            A gadruped was chosen as the third platform as it can navigate rough terrain and climb stairs. The platform chosen was the Unitree GO2, a quadruped robot with a 3D Lidar and an embedded computer.
 
             \subsubsection{Compute backpack}
 
-            % Explain how the jetson, the lidar and the robot communicate.
+            Even though the Unitree GO2 has a LIDAR of it's own and an embeded computer based on the Rockchip RK3588S inside, we decided to add an aditional LIDAR on top of the platform and as such needed an aditional embedded computer.
 
             As is the case with the wheeled platform and the drone, we chose to use a Livox Mid-360 lidar and a Nvidia Jetson Orin embedded computer. Even though the quadruped already carries a 3D Lidar, we chose to use a Mid-360 as the ladder produces around ten times more points per second (21600 points per second for the Unitree L1 Lidar against the 200000 points per second of the MID-360).
 
@@ -456,15 +453,63 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
             % explain how we use webRTC to communicate with the robot (explain whatit is and how it works)
             % explain how we could use the cyclondeDDS because we have access to the newly jailbreaked robot
+            
+        \subsection{Issues encountered}
+            
+            %Big battery issue, reverse engineering of the battery, jailbreaking of the robot
+            As delivered, the robot was not functionnal as the battery was discharged beyond the point of no return. The battery was disassembled and partly reverse engineered to understand the problem. Even though the battery was not repairable, the reverse engineering allowed us to understand the battery's BMS and how it communicated with the robot. In %cite ref
+            it can be seen that I was able to partly reverse engineer the battery communication protocol. This was shared with others from the open source community actively trying to design a replacement motherboard for the robot. 
+            
+            The battery was then replaced by a new one and the robot was jailbroken to allow for more control over the robot.
+            
+            
 
-            \subsubsection{Issues encountered}
-
-            Big battery issue, reverse engineering of the battery, jailbreaking of the robot
 
             \begin{figure}[H]
                 \centering
-                IMAGE OF DISASEMBLED BATTERY
+                \color{red} IMAGE OF DISASEMBLED BATTERY
             \end{figure}
+
+
+            \begin{figure}[H]
+                \centering
+                \color{red}LISTING OF THE REVERSE ENGINEERED PROTOCOL OF THE BATTERY
+            \end{figure}
+
+            One of the other issues encountered happened after a software update of the robot. We weren't able to connect via SSH to the linux computer inside the robot. This required many days of reverse engineering of the new firmware with the help of other people online.
+
+            The update had removed a vulnerable update mechanism that previously allowed us to gain a root shell to the robot. With that shell, we were then able to change the password of the robot and gain access to the robot via SSH. The new firmware had also prevented us from using the ethernet port of the robot to communicate to the robot using the CyclondeDDSm which is one of the Data Distribution Services that ROS can use. This functionality of the robot is usually reserved for the educational version of the GO2, but the company doesn't offer any upgrade from the standard version to the educational version.
+
+            As such, I helped the open source community to design a new unlocking method. For reference, in the previous version, only a version number in a single file needed to be changed from a 2 to a 4 ti unlock every functionality of the robot. The new update brought many new chalenges as every binary was not heavely obfuscated and had increased in size by a factor of 10, every file's checksum was now verified by a yet unknown program, no debuger could be attached as every binary checked their parent process, and many other obfuscation techniques were used.
+
+            The anti debuger technique was quickly bypassed as only the name of the parent process was checked against a list of names, \texttt{gdb-server} not being part of this list made it easy to debug the binaries. Every binary also checked for the presence of a \texttt{tracepid} value, which was solved at first with kernel module that hides the presence of the \texttt{tracepid} value. Other threads were also created to continue monitoring those values in the binaries, but patching the \texttt{pthread\_create} instructions to \texttt{MOV X0, \#0} solved that problem.
+
+            Once the location of the checksum check was identified in a binary, the instruction responsible for the comparaison was patched to always return true : the previsou instruction \texttt{BL <compare>} was replaced by \texttt{MOV X0, \#0}.
+
+            Finaly, the version check was bypassed by consolidating two instruction in one, to in terms have room to set the value of the register \texttt{X0} to 4 as can be seen in the table \ref{tab:patched_instructions}.
+            
+
+            % Please add the following required packages to your document preamble:
+            % \usepackage[table,xcdraw]{xcolor}
+            % Beamer presentation requires \usepackage{colortbl} instead of \usepackage[table,xcdraw]{xcolor}
+            \begin{table}[]
+                \centering
+                \mbox{}\clap{
+                \begin{tabular}{|l|l|l|l|l|}
+                \hline
+                \textbf{Address} & \textbf{Original value} & \textbf{Original Instruction}      & \textbf{Patched value} & \textbf{Patched instruction}       \\ \hline
+                \texttt{565BD80} & \texttt{E0 7B BF A9}   & \texttt{stp     x0, x30, {[}sp,\#-0x10{]}!} & \texttt{80 00 80 D2}            & \texttt{mov x0, \#4}                    \\ \hline
+                                 & \texttt{63 4D 00 94}   & \texttt{bl      sub\_566F310              } & \texttt{E0 7B BF A9}            & \texttt{stp x0, x30, {[}sp,\#-0x10{]}!} \\ \hline
+                                 & \texttt{84 00 00 18}   & \texttt{ldr     w4, \#0x565BD98           } & \texttt{63 4D 00 94}            & \texttt{bl sub\_566F310}                \\ \hline
+                                 & \texttt{84 7C 40 93}   & \texttt{sxtw    x4, w4                    } & \texttt{64 00 00 98}            & \texttt{ldrsw X4, \#0x565BD98}          \\ \hline
+                \end{tabular}
+                }
+                \label{tab:patched_instructions}    
+                \caption{Patched instructions for version check}
+            \end{table}
+
+
+
 
         \newpage
 
