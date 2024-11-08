@@ -150,7 +150,7 @@
 \title{Final Year Project Report\vspace{10pt}\\
 **************************************************\\
 Multi Agent Scene Exploration and Mapping \\
-for Continuous Digital Rwin Creation\vspace{10pt}\\
+for Continuous Digital Twin Creation\vspace{10pt}\\
 **************************************************}
 \author{BELPOIS Vincent \\ Under the supervision of Dr. Ivan \textsc{Mutis}}
 
@@ -281,8 +281,10 @@ for Continuous Digital Rwin Creation\vspace{10pt}\\
                 
                 \begin{figure}[h]
                     \centering
-                    INSERT (a) (b) PICTURE OF BOTH DRIVERS
-                    \caption{Comparison of L298N (a) and DFRobot 7A dial DC Motor Driver (b)}
+                    %INSERT (a) (b) PICTURE OF BOTH DRIVERS
+                    \includegraphics[width=0.3\textwidth]{Images/olddrivers.jpg}
+                    \includegraphics[width=0.4\textwidth]{Images/newdrivers.jpg}
+                    \caption{L298N (a) and DFRobot 7A dual DC Motor Driver (b)}
                     \label{fig:drivers_comparison}
                 \end{figure}
 
@@ -483,7 +485,9 @@ for Continuous Digital Rwin Creation\vspace{10pt}\\
         \subsection{Exploration}
             \subsubsection{Metrics for exploration}
             % show how we calculate the exploration rate using the tools provided in the TARE planner
+            % explain the need for a pre-recorded pointcloud of the area we wish to explore
             \subsubsection{TARE-PLANNER}
+            % go in details about the process that the TARE-planner uses to explore and the motivations for the original creation of this planner (darpa sub teranean chaleneg)
             \subsubsection{MTARE-PLANNER}
             % multi agent exploration
             \subsubsection{Comparison of exploration algorithms}
