@@ -249,7 +249,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \centering
             LIDAR MOUNT CAD
             %\includegraphics[width=0.8\textwidth]{images/lidar_mount_cad.png}
-            \caption{CAD model of the LIDAR sensor and embedded computer mount}
+            \caption{Drwing of CAD model of the LIDAR sensor and embedded computer mount}
             \label{fig:LIDAR_mount}
         \end{figure}
         
@@ -257,14 +257,14 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \centering
             MOTOR DRIVER MOUNT CAD
             %\includegraphics[width=0.8\textwidth]{images/motor_driver_mount_cad.png}
-            \caption{CAD model of the motor driver mounting solution}
+            \caption{Drawing of CAD model of the motor driver mounting solution}
             \label{fig:motor_driver_mount}
         \end{figure}
         
         \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.8\textwidth]{Images/ViewRoverV1.pdf}
-            \caption{CAD model of the modified six-wheeled platform's top}
+            \caption{Drawing of CAD model of the modified six-wheeled platform's top}
             \label{fig:full_cad_model}
         \end{figure}
 
@@ -307,7 +307,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
                 1   & 0   & PWM     & Forward at PWM speed \\ \hline
                 0   & 1   & PWM     & Reverse at PWM speed \\ \hline
                 \end{tabular}
-                \caption{Motor Control Table}
+                \caption{Motor control signal table}
                 \label{tab:motor_control}
             \end{table}
 
@@ -353,7 +353,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \subsubsection{ROS 2 setup}
         
         % What nodes did I create, explain the setup with nav2 working.
-        
+        % TODO : Write a small paragraph in order to explain how ROS2 is setup and what external packages we need
 
         \subsubsection{Issues encountered}
             
@@ -391,7 +391,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
                 \begin{figure}[H]
                     \centering
                     \includegraphics[width=0.6\textwidth]{Images/BatteryTrayDrawing.pdf}
-                    \caption{New battery tray}
+                    \caption{Drawing of CAD model of new battery tray}
                     \label{fig:landing_legs}
                 \end{figure}    
             \subsubsection{Electronics architecture}
@@ -399,7 +399,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
                 % Similarly to the rover, the jetson is still connected to the LIDAR via ethernet 
                 % The drone is controlled by a PLACEHOLDER_CONTROLLER, which is connected to the jetson via USB
 
-                To keep the architecture similar to the one used on the wheeled robot, the quadcopter was also equipped with an Nvidia Jetson Orin embedded computer and a Livox MID-360 LIDAR. The computer and the LIDAR get their power from the drone's battery, which is regulated to 19V and 12V respectively.
+                To keep the architecture similar to the one used on the wheeled robot, the quadcopter was also equipped with an Nvidia Jetson Orin embedded computer and a Livox Mid-360 LIDAR. The computer and the LIDAR get their power from the drone's battery, which is regulated to 19V and 12V respectively.
 
             \subsubsection{Software architecture and setup}
                 
@@ -415,7 +415,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         Even though the Unitree GO2 has a LIDAR of it's own and an embeded computer based on the Rockchip RK3588S inside, we decided to add an aditional LIDAR on top of the platform and as such needed an aditional embedded computer.
 
-        As is the case with the wheeled platform and the drone, we chose to use a Livox Mid-360 LIDAR and a Nvidia Jetson Orin embedded computer. Even though the quadruped already carries a 3D LIDAR, we chose to use a Mid-360 as the ladder produces around ten times more points per second (21600 points per second for the Unitree L1 LIDAR against the 200000 points per second of the MID-360).
+        As is the case with the wheeled platform and the drone, we chose to use a Livox Mid-360 LIDAR and a Nvidia Jetson Orin embedded computer. Even though the quadruped already carries a 3D LIDAR, we chose to use a Mid-360 as the ladder produces around ten times more points per second (21600 points per second for the Unitree L1 LIDAR against the 200000 points per second of the Mid-360).
 
         \begin{figure}[H]
             \centering
@@ -436,7 +436,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \centering
             \includegraphics[width=0.3\textwidth]{Images/ScanGO2Top.pdf}
             \includegraphics[width=0.6\textwidth]{Images/ComputeBackpack.pdf}
-            \caption{Scanned top and CAD model of the compute backpack }
+            \caption{Scanned top of GO2 robot and drawing of CAD model of the compute backpack }
             \label{fig:scanner_and_cad}
         \end{figure}
 
@@ -445,6 +445,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         \begin{figure}[H]
             \centering
+            \color{red}
             IMAGE OF COMPUTE BACKPACK
         \end{figure}
 
@@ -521,12 +522,59 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
     There are three main components to the software architecture of the multi-agent system: mapping, planning, and exploration. Mapping first involves knowing where the robot is and how it is moving, or it's odometry. Planning is often divided in two scales, a local one where we consider what movements the robot is capable of doing, a global one that aims to find the best path to a goal. Exploration uses the two former process as to determine where the robot should go to maximize the information gathered.
 
     \subsection{Mapping}
-        
+
+        Mapping is the action of aligning the robot's acquired LIDAR scans in relation to the initial pose. For that, one or multiple methods of odometry are needed. 
         \subsubsection{Introduction to SLAM}
-        \subsubsection{Comparison of odometry algorithms}
+        SLAM or Simulataneous Location And Mapping is the action of using a scanner, in our case a LIDAR, for both the construction of a map, and utilising this map to infer our position. In 2D, alrithms like 
+        % TODO cite simple 2D algorithms for SLAM
+
+        % TODO : Add simple diagram of 2D SLAM ?
+
+        %\subsubsection{Comparison of odometry algorithms}
+        
+        
         \subsubsection{LIDAR inertial odometry}
+
+        LIDARs are often paired with Inertial Measurement Units (IMUs) as algorithms can be conceived to make use of both the LIDAR and the IMU for odometry. Registration of features of the last scan of the LIDAR with previous ones provide long term accuracy and mnimize potential drift, while the IMU provide a high rate of movement data that can be used to both facilitate the alignment, as well as undistort the scans that were captured during fast movements.
+
+        % TODO add quick diagram explaining the steps of FAST LIO
+
+        As the Livox Mid-360 also carries an IMU, this is the reaswon why I turned myself to those kinds of algorithms for the odometry. 
+
+        One such algrothim is FAST-LIO2 \cite{xu2022fast},which I chose for being close to the state of the art and having a version available that was compatible with the MID-360 LIDAR.
+
+
+        %! add reference to this figure
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.95\textwidth]{Images/overview_fastlio2.png}
+            \caption{FAST-LIO2 algorithm}
+        \end{figure}
+
+        \subsubsection{Comparaison of lidar inertial odometry algorithms}
+
+
+
         \subsubsection{Terrain analysis}
         % explain the two terrain analysis we do on the acquired point cloud
+
+        To determine the navigable and non navigable areas, the aligned point cloud gathered by the LIDAR and the odometry is analyzed. The first analysis is one at a closer range, while the other has a longer range and a longer decay time.
+
+        
+        % TODO explain the algo used
+        
+        % TODO add a comparaison of the two obtained opontclouds
+
+        %! add reference to this figure
+        \begin{figure}
+            \begin{figure}[H]
+                \centering
+                \subfigure[Close range terrain analysis]{\includegraphics[width=0.45\textwidth]{Images/terrainAnalysis.png}}
+                \subfigure[Extended terrain analysis]{\includegraphics[width=0.45\textwidth]{Images/terrainAnalysisExt2.png}}
+                \caption{Comparison of close range and extended range terrain analysis}
+            \end{figure}
+        \end{figure}
+
     \subsection{Planning}
         \subsubsection{Path planning}
         \subsubsection{2D path planning}
