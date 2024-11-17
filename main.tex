@@ -45,7 +45,7 @@
 \usepackage{listofitems} % for \readlist to create arrays
 
 
-\tikzstyle{mynode}=[thick,draw=blue,fill=blue!20,circle,minimum size=22]
+\tikzstyle{mynode}=[thick, draw=blue, fill=blue!20,circle, minimum size=22]
 
 
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -249,21 +249,21 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \centering
             LIDAR MOUNT CAD
             %\includegraphics[width=0.8\textwidth]{images/lidar_mount_cad.png}
-            \caption{Drwing of CAD model of the LIDAR sensor and embedded computer mount}
+            \caption{Drawing of CAD model of the LIDAR sensor and embedded computer mount}
             \label{fig:LIDAR_mount}
         \end{figure}
         
         \begin{figure}[htbp]
             \centering
-            MOTOR DRIVER MOUNT CAD
-            %\includegraphics[width=0.8\textwidth]{images/motor_driver_mount_cad.png}
+            %MOTOR DRIVER MOUNT CAD
+            \includegraphics[width=0.3\textwidth]{Images/Motor_driver_holder.pdf}
             \caption{Drawing of CAD model of the motor driver mounting solution}
             \label{fig:motor_driver_mount}
         \end{figure}
         
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=0.8\textwidth]{Images/ViewRoverV1.pdf}
+            \includegraphics[width=0.8\textwidth]{Images/RoverV1.pdf}
             \caption{Drawing of CAD model of the modified six-wheeled platform's top}
             \label{fig:full_cad_model}
         \end{figure}
@@ -271,10 +271,8 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \subsubsection{Electronics architecture}
             The essential electronic components needed to get the platform running were mainly DC motor drivers to drive the motors, a LIDAR sensor and an embedded computer.
             
-            Difficulties were encountered when trying to use the drivers someone else tried before hand as they were underpowered : at stall, the motors required around 5 amps, as measured with a bench top power supply, and the drivers I was trying to use were only capable of delivering 2 amps per channel or a total of 4 amps when combining outputs. The drivers in question were the based on the LN298N which were in terms replaced by the 7A dual motor drivers from DFRobot. A physical comparison can be seen in \ref{fig:drivers_comparison}
-            
-            Difficulties were encountered when trying to use the drivers someone else tried before hand as they were underpowered : at stall, the motors required around 5 amps, as measured with a bench top power supply, and the drivers I was trying to use were only capable of delivering 2 amps per channel or a total of 4 amps when combining outputs. The drivers in question were the L298N H-bridge motor drivers, which were ultimately replaced by the DFRobot 7A Dual DC Motor Driver. The L298N drivers, while popular for smaller projects, proved inadequate for the power requirements of our six-wheeled platform. In contrast, the DFRobot 7A Dual DC Motor Driver offer a continuous current output of 7A per channel, more than sufficient for our needs. This upgrade significantly improved the platform's performance, allowing for smoother operation and better handling of the motor's power demands. A physical comparison of these drivers can be seen in Figure.\ref{fig:drivers_comparison}.
-
+            Difficulties were encountered when trying to use the drivers someone else tried beforehand as they were under powered : at stall, the motors required around 5 amps, as measured with a bench top power supply, and the drivers I was trying to use were only capable of delivering 2 amps per channel or a total of 4 amps when combining outputs. The drivers in question were the based on the LN298N which were in terms replaced by the 7A dual motor drivers from DFRobot. A physical comparison can be seen in \ref{fig:drivers_comparison}.
+        
             
             \begin{figure}[h]
                 \centering
@@ -288,9 +286,9 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             The three motor drivers were connected to a microcontroller. The connection can be seen in \ref{fig:driver_to_pico}.
             I chose to use a Raspberry Pi Pico microcontroller for its many outputs, totaling 26 general purpose input outputs (GPIO). Each driver required 6 control signals or 3 per motor: two signals are used to control the direction of the motor according to Table \ref{tab:motor_control}, while the third signal's duty cycle determines the speed.
 
-            A radio control (RC) receiver was also connected to interrupt capable GPIOs of the microcontroller to be able to control the platform manually. Three channels of the RC receiver were used to control the speed, the direction and the mode of the platform. The mode refers to whether or not the platform is in manual control or in autonomous mode and is connected to channel 5 of the radio which has a two way switch.
+            A radio control (RC) receiver was also connected to interrupt capable GPIOs of the microcontroller to be able to control the platform manually. Three channels of the RC receiver were used to control the speed, the direction and the mode of the platform. The mode refers to whether or not the platform is in manual control or in autonomous mode and is connected to channel 5 of the radio which has a two-way switch.
 
-            Finally, the pico is connected to an Nvidia Jetson Orin single board computer (SBC) via USB. This connection is used both to reprogram the pico, as well as to send speed and direction commands to each motor via a serial communication. 
+            Finally, the Pico is connected to an Nvidia Jetson Orin single board computer (SBC) via USB. This connection is used both to reprogram the Pico, and to send speed and direction commands to each motor via a serial communication. 
 
             Not including the power distribution and regulation system, \ref{fig:overall_electical_system} shows the electrical connections of these components on the modified six-wheeled platform.
 
@@ -336,7 +334,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         %How the software on the jetson communicates with the microcontroller and how it communicates with the LIDAR. The choice of the odometry algorithm will be explain in another section (master, comparison of multiple algo)
 
-        The robot operation system (ROS) was chosen as the software framework for the platform running on the Jetson Orin embedded computer. Specifically, ROS2 Humble Hawksbill was selected due to its extensive package availability and compatibility with the Jetson Orin's hardware. Indeed, I was made aware of the strugles of another researcher running a ROS based robot on an Nvidia Jetson Nano and how Ubuntu, and ROS version mismatch may bring problems. 
+        The robot operating system (ROS) was chosen as the software framework for the platform running on the Jetson Orin embedded computer. Specifically, ROS2 Humble Hawksbill was selected due to its extensive package availability and compatibility with the Jetson Orin's hardware. Indeed, I was made aware of the struggles of another researcher running a ROS based robot on an Nvidia Jetson Nano and how Ubuntu, and ROS version mismatch may bring problems. 
         
         This version of ROS2 provides a robust and flexible framework for developing and integrating various components of the platform, including sensor processing, navigation, and control. For real-time critical tasks such as motor control and RC radio interrupts, the Raspberry Pi Pico microcontroller was utilized, leveraging its ability to handle low-level, time-sensitive operations. The microcontroller's firmware was developed from the ground up by myself, guaranteeing reliable execution of motor control and interrupt handling tasks. By combining the strengths of ROS2 on the Jetson Orin with the real-time capabilities of the Raspberry Pi Pico, the platform achieves a robust and efficient software architecture that enables seamless integration of autonomous navigation, sensor processing, and manual control.
 
@@ -383,9 +381,9 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
             \subsubsection{Mechanical modifications}
 
-                I designed and 3D printed new landing legs that fit on the arms of the quadcopter. Those landing legs were designed to increase the landing stability, which I noticed was a problem in the manual flight I performed, and to reduce the blindspots of the LIDAR which was to be placed on the center of the underside of the drone.
+                I designed and 3D printed new landing legs that fit on the arms of the quadcopter. Those landing legs were designed to increase the landing stability, which I noticed was a problem in the manual flight I performed, and to reduce the blind spots of the LIDAR which was to be placed in the center of the underside of the drone.
 
-                I also took the oportunity to redisgne the battery mounting mechanism which was bulky, heavy, and suitable to only one size of battery to one that is much simpler and uses velcro straps as can been seen in Figure \ref{fig:landing_legs}. This resulted in a saving of \color{red} XXX grams \color{black} and thus increased the flight time of the drone. 
+                I also took the opportunity to redesign the battery mounting mechanism which was bulky, heavy, and suitable to only one size of battery to one that is much simpler and uses Velcro straps as can be seen in Figure \ref{fig:landing_legs}. This resulted in a saving of \color{red} XXX grams \color{black} and thus increased the flight time of the drone. 
                 
 
                 \begin{figure}[H]
@@ -409,18 +407,18 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             
     \subsection{Quadruped platform setup}
 
-        A gadruped was chosen as the third platform as it can navigate rough terrain and climb stairs. The platform chosen was the Unitree GO2, a quadruped robot with a 3D LIDAR and an embedded computer.
+        A quadruped was chosen as the third platform as it can navigate rough terrain and climb stairs. The platform chosen was the Unitree GO2, a quadruped robot with a 3D LIDAR and an embedded computer.
 
         \subsubsection{Compute backpack}
 
-        Even though the Unitree GO2 has a LIDAR of it's own and an embeded computer based on the Rockchip RK3588S inside, we decided to add an aditional LIDAR on top of the platform and as such needed an aditional embedded computer.
+        Even though the Unitree GO2 has a LIDAR of its own and an embedded computer based on the Rockchip RK3588S inside, we decided to add an additional LIDAR on top of the platform and as such, we needed an additional embedded computer.
 
         As is the case with the wheeled platform and the drone, we chose to use a Livox Mid-360 LIDAR and a Nvidia Jetson Orin embedded computer. Even though the quadruped already carries a 3D LIDAR, we chose to use a Mid-360 as the ladder produces around ten times more points per second (21600 points per second for the Unitree L1 LIDAR against the 200000 points per second of the Mid-360).
 
         \begin{figure}[H]
             \centering
             \begin{minipage}{0.45\textwidth}
-                The compute backpack also provides access to a power port with a connector Amass XT-30 and a gigabit ethernet port on the robot that are usually covered by a plastic cover. Those ports are covered by the handle of the GO2 as can be seen in the figure \ref{fig:handle_cover}.
+                The compute backpack also provides access to a power port with a connector Amass XT-30 and a gigabit Ethernet port on the robot that are usually covered by a plastic cover. Those ports are covered by the handle of the GO2 as can be seen in the figure \ref{fig:handle_cover}.
             \end{minipage}%
             \hfill
             \begin{minipage}{0.5\textwidth}
@@ -430,7 +428,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
                 \label{fig:handle_cover}
             \end{minipage}
         \end{figure}
-        To fit the Nvidia Jetson, the LIDAR, and the power regulators needed for both of them, the top part of the robot was scanned and a new top part was designed and 3D printed. The CAD model of top part and the scan can be seen in figure \ref{fig:scanner_and_cad}. This holds the LIDAR on the back of the robot to be sure to cover the grounds during the scanning process. The angle was determined as to not have any of the robot itself in the field of view of the LIDAR.
+        To fit the Nvidia Jetson, the LIDAR, and the power regulators needed for both of them, the top part of the robot was scanned, and a new top part was designed and 3D printed. The CAD model of top part and the scan can be seen in Figure \ref{fig:scanner_and_cad}. This holds the LIDAR on the back of the robot to be sure to cover the grounds during the scanning process. The angle was determined as to not have any of the robot itself in the field of view of the LIDAR. Additionally, the compute backpack was designed to accommodate other experiments like mounting a robotic arm on the robot. For that purpose, all four sides figure threaded mounting holes.
 
         \begin{figure}[H]
             \centering
@@ -451,7 +449,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
 
         
-        \subsubsection{Comminucation with the quadruped}
+        \subsubsection{Communication with the quadruped}
 
         % explain how we use webRTC to communicate with the robot (explain whatit is and how it works)
         % explain how we could use the cyclondeDDS because we have access to the newly jailbreaked robot
@@ -459,38 +457,73 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
     \subsection{Issues encountered}
         
         %Big battery issue, reverse engineering of the battery, jailbreaking of the robot
-        As delivered, the robot was not functionnal as the battery was discharged beyond the point of no return. The battery was disassembled and partly reverse engineered to understand the problem. Even though the battery was not repairable, the reverse engineering allowed us to understand the battery's BMS and how it communicated with the robot. In \cite{battery_reverse_engineering}
-        it can be seen that I was able to partly reverse engineer the battery communication protocol. This was shared with others from the open source community actively trying to design a replacement motherboard for the robot. 
+        As delivered, the robot was not functional as the battery was discharged beyond the point of no return. The battery was disassembled (see Figure \ref{fig:disassembled_battery}) and partly reverse engineered to understand the problem. Even though the battery was not repairable, the reverse engineering allowed us to understand the battery's BMS and how it communicated with the robot. In Table \ref{table:battery_protocol} it can be seen that I was able to partly reverse engineer the battery communication protocol. This was shared with others from the open source community actively trying to design a replacement motherboard for the robot. 
         
         The battery was then replaced by a new one and the robot was jailbroken to allow for more control over the robot.
         
 
-        \begin{figure}[H]
+        \begin{figure}[h]
             \centering
             \subfigure[Disassembled battery]{\includegraphics[width=0.4\textwidth]{Images/teardown_battery.jpg}}
             \subfigure[Battery Management System (BMS)]{\includegraphics[width=0.44\textwidth]{Images/BMS.jpg}}
             \caption{Disassembled battery and Battery Management System (BMS)}
+            \label{fig:disassembled_battery}
         \end{figure}
 
-
-        \begin{figure}[H]
+        \begin{table}
             \centering
-            \color{red}LISTING OF THE REVERSE ENGINEERED PROTOCOL OF THE BATTERY
-            \caption{Partly reverse engineered battery protocol}
-            \label{fig:battery_protocol}
-        \end{figure}
+            \begin{tabular}{|c|c|c|c|}
+                \hline
+                Byte & Data & Conversion & Comment \\
+                \hline
+                0 & EF FE & -4098 & start of battery message \\
+                2 & 3C 03 & 15363 & start of battery message \\
+                4 & 0F 00 & 3840 & cell 8 voltage in mV \\
+                6 & 0F 01 & 3841 & cell 7 voltage in mV \\
+                8 & 0F 01 & 3841 & cell 6 voltage in mV \\
+                10 & 0F 03 & 3843 & cell 5 voltage in mV \\
+                12 & 0F 01 & 3841 & cell 4 voltage in mV \\
+                14 & 0E FF & 3839 & cell 3 voltage in mV \\
+                16 & 0F 01 & 3841 & cell 2 voltage in mV \\
+                18 & 0F 01 & 3841 & cell 1 voltage in mV \\
+                20 & 77 FB & 30715 & battery total voltage in mV \\
+                22 & 01 29 & 297 &  \\
+                24 & FF F8 & -8 &  \\
+                26 & FF FF & -1 &  \\
+                28 & 64 00 & 100 & SoC in percent \\
+                30 & 09 BF & 2495 & temperature 24.95 C \\
+                32 & 09 C6 & 2502 & temperature 25.02 C \\
+                34 & 09 A4 & 2468 & temperature 24.68 C \\
+                36 & 09 A8 & 2472 & temperature 24.72 C \\
+                38 & 00 00 & 0 &  \\
+                40 & 57 70 & 22384 &  \\
+                42 & 09 01 & 2305 & number of charge or discharge cycles \\
+                44 & 0D 06 & 333 &  \\
+                46 & 00 00 & 0 &  \\
+                48 & 00 00 & 0 &  \\
+                50 & 00 00 & 0 &  \\
+                52 & 00 FF & 255 &  \\
+                54 & 00 00 & 0 &  \\
+                56 & 47 80 & 18304 & crc32 \\
+                58 & 7E 9D & 32413 & crc32 \\
+                \hline
+                \end{tabular}
+                \label{table:battery_protocol}
+            \caption{Partly decoded battery protocol}
+        \end{table}
 
-        One of the other issues encountered happened after a software update of the robot. We weren't able to connect via SSH to the linux computer inside the robot. This required many days of reverse engineering of the new firmware with the help of other people online.
 
-        The update had removed a vulnerable update mechanism that previously allowed us to gain a root shell to the robot. With that shell, we were then able to change the password of the robot and gain access to the robot via SSH. The new firmware had also prevented us from using the ethernet port of the robot to communicate to the robot using the CyclondeDDS which is one of the Data Distribution Services that ROS can use. This functionality of the robot is usually reserved for the educational version of the GO2, but the company doesn't offer any upgrade from the standard version to the educational version.
+        One of the other issues encountered happened after a software update of the robot. We weren't able to connect via SSH to the Linux computer inside the robot. This required many days of reverse engineering of the new firmware with the help of other people online.
 
-        As such, I helped the open source community to design a new unlocking method. For reference, in the previous version, only a version number in a single file needed to be changed from a 2 to a 4 ti unlock every functionality of the robot. The new update brought many new chalenges as every binary was not heavely obfuscated and had increased in size by a factor of 10, every file's checksum was now verified by a yet unknown program, no debuger could be attached as every binary checked their parent process, and many other obfuscation techniques were used.
+        The update had removed a vulnerable update mechanism that previously allowed us to gain a root shell to the robot. With that shell, we were then able to change the password of the robot and gain access to the robot via SSH. The new firmware had also prevented us from using the Ethernet port of the robot to communicate to the robot using the CycloneDDS which is one of the Data Distribution Services that ROS can use. This functionality of the robot is usually reserved for the educational version of the GO2, but the company doesn't offer any upgrade from the standard version to the educational version.
 
-        The anti debuger technique was quickly bypassed as only the name of the parent process was checked against a list of names, \texttt{gdb-server} not being part of this list made it easy to debug the binaries. Every binary also checked for the presence of a \texttt{tracepid} value, which was solved at first with kernel module that hides the presence of the \texttt{tracepid} value. Other threads were also created to continue monitoring those values in the binaries, but patching the \texttt{pthread\_create} instructions to \texttt{MOV X0, \#0} solved that problem.
+        As such, I helped the open source community to design a new unlocking method. For reference, in the previous version, only a version number in a single file needed to be changed from a 2 to a 4 ti unlock every functionality of the robot. The new update brought many new challenges as every binary was not heavily obfuscated and had increased in size by a factor of 10, every file's checksum was now verified by a yet unknown program, no debugger could be attached as every binary checked their parent process, and many other obfuscation techniques were used.
 
-        Once the location of the checksum check was identified in a binary, the instruction responsible for the comparaison was patched to always return true : the previsou instruction \texttt{BL <compare>} was replaced by \texttt{MOV X0, \#0}.
+        The anti debugger technique was quickly bypassed as only the name of the parent process was checked against a list of names, \texttt{gdb-server} not being part of this list made it easy to debug the binaries. Every binary also checked for the presence of a \texttt{tracepid} value, which was solved at first with kernel module that hides the presence of the \texttt{tracepid} value. Other threads were also created to continue monitoring those values in the binaries, but patching the \texttt{pthread\_create} instructions to \texttt{MOV X0, \#0} solved that problem.
 
-        Finaly, the version check was bypassed by consolidating two instruction in one, to in terms have room to set the value of the register \texttt{X0} to 4 as can be seen in the table \ref{tab:patched_instructions}.
+        Once the location of the checksum check was identified in a binary, the instruction responsible for the comparison was patched to always return true : the previous instruction \texttt{BL <compare>} was replaced by \texttt{MOV X0, \#0}.
+
+        Finally, the version check was bypassed by consolidating two instruction in one, to in terms have room to set the value of the register \texttt{X0} to 4 as can be seen in the table \ref{tab:patched_instructions}.
         
 
         % Please add the following required packages to your document preamble:
@@ -524,41 +557,37 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
     \subsection{Mapping}
 
         Mapping is the action of aligning the robot's acquired LIDAR scans in relation to the initial pose. For that, one or multiple methods of odometry are needed. 
-        \subsubsection{Introduction to SLAM}
-        SLAM or Simulataneous Location And Mapping is the action of using a scanner, in our case a LIDAR, for both the construction of a map, and utilising this map to infer our position. In 2D, alrithms like 
-        % TODO cite simple 2D algorithms for SLAM
+        \subsubsection{Introduction to SLAM`}'
+        SLAM or Simultaneous Location And Mapping is the action of using a scanner, in our case a LIDAR, for both the construction of a map, and utilizing this map to infer our position. In 2D, algorithms like Monte Carlo based particle filters \cite{fox1999monte}, or graph based approaches \cite{macenski2021slam} are used and have not been lately improved. In 3D, the problem is much more complex and the algorithms are much more computationally expensive.  
 
-        % TODO : Add simple diagram of 2D SLAM ?
 
-        %\subsubsection{Comparison of odometry algorithms}
         
         
         \subsubsection{LIDAR inertial odometry}
-
-        LIDARs are often paired with Inertial Measurement Units (IMUs) as algorithms can be conceived to make use of both the LIDAR and the IMU for odometry. Registration of features of the last scan of the LIDAR with previous ones provide long term accuracy and mnimize potential drift, while the IMU provide a high rate of movement data that can be used to both facilitate the alignment, as well as undistort the scans that were captured during fast movements.
-
-        % TODO add quick diagram explaining the steps of FAST LIO
-
-        As the Livox Mid-360 also carries an IMU, this is the reaswon why I turned myself to those kinds of algorithms for the odometry. 
-
-        One such algrothim is FAST-LIO2 \cite{xu2022fast},which I chose for being close to the state of the art and having a version available that was compatible with the MID-360 LIDAR.
-
-
+        
+        LIDARs are often paired with Inertial Measurement Units (IMUs) as algorithms can be conceived to make use of both the LIDAR and the IMU for odometry. Registration of features of the last scan of the LIDAR with previous ones provide long term accuracy and minimize potential drift, while the IMU provide a high rate of movement data that can be used to both facilitate the alignment, as well as to undistort the scans that were captured during fast movements.
+        
+        As the Livox Mid-360 also carries an IMU, this is the reason why I turned myself to those kinds of algorithms for the odometry. 
+        
+        One such algorithm is FAST-LIO2 \cite{xu2022fast}, which I chose for being close to the state of the art and having a version available that was compatible with the MID-360 LIDAR. A more detailed comparison of the different LIDAR inertial odometry algorithms will be presented in the section \ref{section:etatArt}.
+        
+        
         %! add reference to this figure
         \begin{figure}[h]
             \centering
             \includegraphics[width=0.95\textwidth]{Images/overview_fastlio2.png}
             \caption{FAST-LIO2 algorithm}
         \end{figure}
+        
+        \subsubsection{Comparison of LIDAR inertial odometry algorithms}
 
-        \subsubsection{Comparaison of lidar inertial odometry algorithms}
-
+        \label{section:etatArt}
 
 
         \subsubsection{Terrain analysis}
         % explain the two terrain analysis we do on the acquired point cloud
 
-        To determine the navigable and non navigable areas, the aligned point cloud gathered by the LIDAR and the odometry is analyzed. The first analysis is one at a closer range, while the other has a longer range and a longer decay time.
+        To determine the navigable and non-navigable areas, the aligned point cloud gathered by the LIDAR and the odometry are analyzed. The first analysis is one at a closer range, while the other has a longer range and a longer decay time.
 
         % The following figure shows that both terrain_analysis and terrain_analysis_ext 
         % subscribe to /odom, /registered_scan and publish /terrain_map and /terrain_map_ext respectively.
@@ -631,11 +660,11 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             I was also able to find a working simulation of the Livox Mid-360 LIDAR sensor we chose for every platform. The package \cite{livox_lidar_simulation_fork} was a fork of the original simulation package from Livox \cite{livox_laser_simulation} and was modified to work with the specific LIDAR we are using. 
         \subsubsection{Nvidia Isaac Sim}
 
-            Isaac sim is a high fidelity simulation environment developed by Nvidia. This simulation environment uses a PhysX based physics engine and is able to simulate multiple platforms at once. It is also able to simulate sensors like cameras, LIDARs and IMUs. The main advantage of Isaac sim is it's high fidelity and parallelization. However, this also brings a lot of complexity and the need for a RTX GPU to run it.
+            Isaac sim is a high fidelity simulation environment developed by Nvidia. This simulation environment uses a PhysX based physics engine and is able to simulate multiple platforms at once. It is also able to simulate sensors like cameras, LIDARs and IMUs. The main advantage of Isaac sim is its high fidelity and parallelization. However, this also brings a lot of complexity and the need for a RTX GPU to run it.
 
             The high overhead, complexity, low portability and the fact that it was not open source made me choose Gazebo over Isaac sim for the simulation of the platforms.
 
-            In addition, the LIDAR we are using has a non repetitive pattern, which is not currently supported by Isaac sim and would have required a lot of work to simulate.
+            In addition, the LIDAR we are using has a non-repetitive pattern, which is not currently supported by Isaac sim and would have required a lot of work to simulate.
 
             I did experiment with Isaac sim to simulate the quadruped platform, as it was the most complex platform to simulate and there existed a simulation of the robot in Isaac sim.
     \subsection{Simulating sensors}
@@ -652,7 +681,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \subsubsection{Camera}
     \subsubsection{Simulated world}
 
-    As the target application of this multi agent exploration is to map a construction environment, a simulated world of an office in construction was created. The world is mainly based on the Gazebo office world by Clearpath Robotics and has two versions : one in construction with wall being build and construction equipement all over, and one where the office is constructed as can be seen in figure \ref{fig:office_world}.
+    As the target application of this multi agent exploration is to map a construction environment, a simulated world of an office in construction was created. The world is mainly based on the Gazebo office world by Clearpath Robotics and has two versions : one in construction with wall being build and construction equipment all over, and one where the office is constructed as can be seen in figure \ref{fig:office_world}.
 
     \begin{figure}
         \centering
