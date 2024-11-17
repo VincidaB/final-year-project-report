@@ -560,7 +560,32 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         To determine the navigable and non navigable areas, the aligned point cloud gathered by the LIDAR and the odometry is analyzed. The first analysis is one at a closer range, while the other has a longer range and a longer decay time.
 
-        
+        % The following figure shows that both terrain_analysis and terrain_analysis_ext 
+        % subscribe to /odom, /registered_scan and publish /terrain_map and /terrain_map_ext respectively.
+        %! add reference to this figure
+        \begin{figure}[H]
+                \centering
+                \begin{tikzpicture}[node distance=2cm, auto]
+                        % Nodes
+                        \node (odom) [draw, rectangle, minimum width=2.5cm, minimum height=1cm] {/odom};
+                        \node (scan) [draw, rectangle, minimum width=2.5cm, minimum height=1cm, below of=odom] {/registered\_scan};
+                        \node (ta) [draw, ellipse, minimum width=2.5cm, minimum height=1.25cm, right of=odom, node distance=5.5cm] {terrain\_analysis};
+                        \node (ta_ext) [draw, ellipse, minimum width=5.5cm, minimum height=1.25cm, below of=ta] {terrain\_analysis\_ext};
+                        \node (terrain_map) [draw, rectangle, minimum width=2.5cm, minimum height=1cm, right of=ta, node distance=5.5cm] {/terrain\_map};
+                        \node (terrain_map_ext) [draw, rectangle, minimum width=2.5cm, minimum height=1cm, below of=terrain_map] {/terrain\_map\_ext};
+
+                        % Arrows
+                        \draw[->] (odom) -- (ta);
+                        \draw[->] (scan) -- (ta);
+                        \draw[->] (odom) -- (ta_ext);
+                        \draw[->] (scan) -- (ta_ext);
+                        \draw[->] (ta) -- (terrain_map);
+                        \draw[->] (ta_ext) -- (terrain_map_ext);
+                \end{tikzpicture}
+                \caption{Diagram showing the subscriptions and publications of terrain\_analysis and terrain\_analysis\_ext}
+                \label{fig:terrain_analysis}
+        \end{figure}
+
         % TODO explain the algo used
         
         % TODO add a comparaison of the two obtained opontclouds
