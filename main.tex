@@ -24,17 +24,20 @@
 
 \usepackage{glossaries}
 \usepackage{subfigure}
+%\usepackage{dot2texi}
 
 \makenoidxglossaries
+
 
 
 \loadglsentries{lexique}
 
 
-\usepackage[table,xcdraw]{xcolor}
+\usepackage[table,xcdraw, x11names, svgnames, rgb]{xcolor}
+\usepackage[utf8]{inputenc}
 \usepackage{eso-pic}
 \usepackage{tikz}
-\usetikzlibrary{shapes,arrows,positioning}
+\usetikzlibrary{shapes,arrows,positioning, snakes}
 \usepackage{float}
 \usepackage{textcomp}
 \usepackage{soul}
@@ -324,6 +327,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             
             \begin{figure}[h]
                 \centering
+                \color{red}
                 Driver to PICO connection diagram
                 \label{fig:driver_to_pico}
             \end{figure}
@@ -581,17 +585,30 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         
         \subsubsection{Comparison of LIDAR inertial odometry algorithms}
 
+        The comparison of LIDAR inertial odometry algorithms was chosen as it is the data that is available to us. LIDAR inertial odometry algorithms can be divided in two categories based on how the LIDAR and IMU data are fused : loosely coupled and tightly coupled.
+
+        Loosely coupled methods estimate the state of each sensor independently, combines the measurement with weights, and then determines the position of the robot. Those methods are useful when both sensors are independent and changes to them want to be tested. The weights can also be changed depending on the sensors used and on their accuracy and noise, or dynamically if a sensor fails or malfunctions. However, we have a LIDAR package that integrates an IMU, making the aforementioned benefits not relevant to us.
+
+        Tightly coupled methods, on the other hand, use the measurements of all sensors to estimate the robot's position. This can mean using the IMU readings to pre process the LIDAR measurements. Those methods however require a more complex algorithm and can be more computationally expensive. They can also be more prone to failure as the failure of one sensor entails the failure of the odometry system.
+
+
+        LOAM (LIDAR Odometry And Mapping) \cite{lee2024lidar} was the first loosely coupled method to be proposed and offered low computational requirements. It used the IMU measurements to estimate velocity while the LIDAR measurement used the velocity estimation for undistortion to offer better position estimation. LeGo-LOAM \cite{shan2018lego} improved on the works of LOAM by improving the performance of the pose estimation and by adding ground segmentation, making the method more robust in ground based applications.
+
+        As for tightly coupled methods to be proposed in the Zebedee paper \cite{bosse2012zebedee} showed the great accuracy the tightly coupled methods can offer. It demonstrated stable mapping of a scene by placing a 2D LIDAR on a spring mobile base. LIPS \cite{geneva2018lips} formalized the closest point plane representation and added IMU preintegration for more accurate pose estimation. Ye et al. \cite{ye2019tightly} added joint optimization of the LIDAR and IMU measurements, improving the performance in high drift scenarios in long term mapping. This paper also added a rotation-contrained refinement which improves the consistency of the global map.
+        FAST-LIO \cite{xu2021fast} greatly improved the performance of previous works by introducing the use of a tightly coupled iterated Kalman Filter. The high computing efficiency of the proposed gain calculation formula improves the performance, making this method interesting for real time applications on embedded systems. FAST-LIO2 \cite{xu2022fast} improved on FAST-LIO by getting rid of the feature extraction step and replacing it registration to the global map. It also improved performance by switching to an incrementally updated kd-tree data structure for map storage. 
+        POINT-LIO \cite{he2023point} employs a different method to the previously mentioned algorithms by using a point-wise position estimation providing a much higher frequency of odometry updates.  
+
         \label{section:etatArt}
 
 
         \subsubsection{Terrain analysis}
+        \label{section:terrain_analysis}
         % explain the two terrain analysis we do on the acquired point cloud
 
-        To determine the navigable and non-navigable areas, the aligned point cloud gathered by the LIDAR and the odometry are analyzed. The first analysis is one at a closer range, while the other has a longer range and a longer decay time.
+        To determine the navigable and non-navigable areas, the aligned point cloud gathered by the LIDAR and the odometry are analyzed. The first analysis is one at a closer range, while the other has a longer range and a longer decay time. The topics that the two analysis subscribe and publish to are shown in Figure \ref{fig:terrain_analysis}. The extended range analysis is used by some planners to determine the best path to take while the close range analysis is used to determine the immediate surroundings of the robot as is showcased in Figure \ref{fig:terrain_analysis}.
 
         % The following figure shows that both terrain_analysis and terrain_analysis_ext 
         % subscribe to /odom, /registered_scan and publish /terrain_map and /terrain_map_ext respectively.
-        %! add reference to this figure
         \begin{figure}[H]
                 \centering
                 \begin{tikzpicture}[node distance=2cm, auto]
@@ -611,7 +628,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
                         \draw[->] (ta) -- (terrain_map);
                         \draw[->] (ta_ext) -- (terrain_map_ext);
                 \end{tikzpicture}
-                \caption{Diagram showing the subscriptions and publications of terrain\_analysis and terrain\_analysis\_ext}
+                \caption{Subscriptions and publications of terrain\_analysis and terrain\_analysis\_ext}
                 \label{fig:terrain_analysis}
         \end{figure}
 
@@ -620,19 +637,52 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         % TODO add a comparaison of the two obtained opontclouds
 
         %! add reference to this figure
-        \begin{figure}
-            \begin{figure}[H]
-                \centering
-                \subfigure[Close range terrain analysis]{\includegraphics[width=0.45\textwidth]{Images/terrainAnalysis.png}}
-                \subfigure[Extended terrain analysis]{\includegraphics[width=0.45\textwidth]{Images/terrainAnalysisExt2.png}}
-                \caption{Comparison of close range and extended range terrain analysis}
-            \end{figure}
+        \begin{figure}[H]
+            \centering
+            \subfigure[Close range terrain analysis]{\includegraphics[width=0.45\textwidth]{Images/terrainAnalysis.png}}
+            \subfigure[Extended terrain analysis]{\includegraphics[width=0.45\textwidth]{Images/terrainAnalysisExt2.png}}
+            \caption{Comparison of close range and extended range terrain analysis}
         \end{figure}
 
+        This terrain analysis paradigm is derived from the works of Ji Shang et al. on fast likelihood-based collision avoidance \cite{zhang2020falco}, as is the local path planning that will be described in section \ref{section:local_path_planning}.
+        
+
     \subsection{Planning}
-        \subsubsection{Path planning}
+        The problem of path planning in 2D is a well known problem in robotics and has been solved many times. However, the problem of path planning in 3D is much more complex that has only recently found efficient solutions. 
+
         \subsubsection{2D path planning}
         % Using nav2 as a base and how we convert from a 3D point cloud to a 2D one 
+        As a first test of the wheeled and quadruped platform, a simple 2D navigation was put in place to showcase the navigation of the platforms on flat ground. Nav2 \cite{macenski2020marathon2} was used with a simple Smac planner \cite{macenski2024smac} to navigate the platforms. The 3D point cloud was converted to a 2D one by taking only a range of the points relative to the robot's height. This was done to showcase the navigation capabilities of the platforms and to test the odometry algorithms.
+
+        % TODO add a simple nav2 costmap image herewq
+
+        \subsubsection{3D local path planning}
+        \label{section:local_path_planning}
+
+        The local path planning in a 3D environment makes use of the Falco paper \cite{zhang2020falco}. In this paper, a method is proposed where the environment is considered deterministically known within a certain range, usually the range of the LIDAR, and probabilistically known beyond the sensor's range. This contrasts with usual methods that require an online search of a graph that needs updating at every sensor reading. The proposed method by Ji Shang et al. eliminates the need for the online search, favoring a path that maximizes the likelihood to reach the goal, instead of selecting the shortest path like traditional methods.
+
+        %! add reference to figure
+        %TODO : add a figure of the local planner paths 
+        \begin{figure}[H]
+            \centering
+            \color{red}
+            ADD LOCAL PLANNER PATHS RVIZ2
+            \caption{Considered paths by the local planner}
+        \end{figure}
+
+
+        The local planner uses the terrain analysis mentioned in section \ref{section:terrain_analysis} to determine the navigable areas.
+        % TODO also add the path following node explaination
+        
+        % TODO check / remove 
+        \begin{figure}[h]
+            \centering
+            \resizebox{0.6\textwidth}{!}{%
+                \input{graphs/local_planner.tex}
+            }   
+            \caption{localPlanner subscriptions and publications}
+            \label{fig:local_planner}
+        \end{figure}
         \subsubsection{Comparison of 3D planning algorithms}
 
     \subsection{Exploration}
