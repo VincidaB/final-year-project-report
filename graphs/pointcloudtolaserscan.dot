@@ -1,0 +1,46 @@
+digraph graphname {
+	graph [bb="0,0,389.58,90",
+		compound=True,
+		rank=same,
+		rankdir=LR,
+		ranksep=0.2
+	];
+	node [label="\N"];
+	t___scan	[URL=topic_3A__scan,
+		height=0.5,
+		label="/scan",
+		pos="362.58,72",
+		shape=box,
+		tooltip="topic:/scan",
+		width=0.75];
+	t___cloud_registered	[URL=topic_3A__cloud_registered,
+		height=0.5,
+		label="/cloud_registered",
+		pos="55,45",
+		shape=box,
+		tooltip="topic:/cloud_registered",
+		width=1.5278];
+	n___pointcloud_to_laserscan	[URL=__pointcloud_to_laserscan,
+		height=0.5,
+		label="/pointcloud_to_laserscan",
+		pos="222.79,45",
+		shape=ellipse,
+		tooltip="/pointcloud_to_laserscan",
+		width=2.7442];
+	t___cloud_registered -> n___pointcloud_to_laserscan	[edgetooltip="Subscription\nnode_name: /pointcloud_to_laserscan\ntopic_name: /cloud_registered\nQoS settings\n- reliability: best_effort\n- durability: volatile\n- lifespan: 9223372036854775807 ns\n- deadline: 9223372036854775807 ns\n- liveliness: automatic\n- liveliness_lease_duration: 9223372036854775807 ns\n- avoid_ros_namespace_conventions: False",
+		penwidth=1,
+		pos="e,123.92,45 110.29,45 111.4,45 112.51,45 113.64,45"];
+	t___rosout	[URL=topic_3A__rosout,
+		height=0.5,
+		label="/rosout",
+		pos="362.58,18",
+		shape=box,
+		tooltip="topic:/rosout",
+		width=0.75];
+	n___pointcloud_to_laserscan -> t___scan	[edgetooltip="Publisher\nnode_name: /pointcloud_to_laserscan\ntopic_name: /scan\nQoS settings\n- reliability: reliable\n- durability: volatile\n- lifespan: 9223372036854775807 ns\n- deadline: 9223372036854775807 ns\n- liveliness: automatic\n- liveliness_lease_duration: 9223372036854775807 ns\n- avoid_ros_namespace_conventions: False",
+		penwidth=1,
+		pos="e,335.43,66.875 290.67,58.105 302.72,60.467 314.86,62.845 325.6,64.95"];
+	n___pointcloud_to_laserscan -> t___rosout	[edgetooltip="Publisher\nnode_name: /pointcloud_to_laserscan\ntopic_name: /rosout\nQoS settings\n- reliability: reliable\n- durability: transient_local\n- lifespan: 10000000000 ns\n- deadline: 9223372036854775807 ns\n- liveliness: automatic\n- liveliness_lease_duration: 9223372036854775807 ns\n- avoid_ros_namespace_conventions: False",
+		penwidth=1,
+		pos="e,335.43,23.125 290.67,31.895 302.72,29.533 314.86,27.155 325.6,25.05"];
+}

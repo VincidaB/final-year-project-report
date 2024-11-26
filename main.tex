@@ -488,7 +488,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         % explain how we could use the cyclondeDDS because we have access to the newly jailbreaked robot
         
     \subsection{Issues encountered}
-        
+        \label{section:go2_battery}
         %Big battery issue, reverse engineering of the battery, jailbreaking of the robot
         As delivered, the robot was not functional as the battery was discharged beyond the point of no return. The battery was disassembled (see Figure \ref{fig:disassembled_battery}) and partly reverse engineered to understand the problem. Even though the battery was not repairable, the reverse engineering allowed us to understand the battery's BMS and how it communicated with the robot. In Table \ref{table:battery_protocol} it can be seen that I was able to partly reverse engineer the battery communication protocol. This was shared with others from the open source community actively trying to design a replacement motherboard for the robot. 
         
@@ -1005,16 +1005,61 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \label{fig:office_world}
     \end{figure}
 
-
-
+    To test the planning algorithms, a more complex environment with more ramps, stairs, and difference in level would have been interesting to develop. However, a lack of time meant that the simulation remained simple, opting for prebuilt environment like the one developped for the Falco paper \cite{zhang2020falco}. They provide 5 environments like a multi-level parking garage, a university campus, a tunnel network, onw with indoor corridors, and a forest. 
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{Images/falco_environments.png}
+        \caption{Environments used in the Falco paper}
+        \label{fig:falco_environments}
+    \end{figure}
+    
+    These environments (Figure \ref{fig:falco_environments}), offer different settings like narrow passages, dead-ends, or large areas to explore. They were subsequently used to test the exploration algorithms like TARE and MTARE.
 
 \section{Contributions}
-    % TODO : working configuration of TARE for a GO2
 
-    % TODO : list my contributions to open source projects
+    With this internship, I bring a low-cost exploration platform that can autonomously map and explore unknown environments. The quadruped platform is especially interesting as it uses a dedicated LIDAR for navigation, exploration, and planning, and a second LIDAR for mapping. This relives some effort from the embedded computer that can perform most of the decisions using a low point per second LIDAR, while the second LIDAR requires a very low amount of processing for mapping. Furthermore, the quadruped platform can be used to explore areas that are difficult to reach for wheeled platforms, like stairs, ramps, or uneven terrain. Stairs remain difficult for a platform of this size, but other platform like Boston Dynamics' Spot, Anybotics' Anymal, or Unitree B2 and B2W have shown tremendous capabilities in this area.
+
+    Additionally, during this internship several contributions to open source projects were made. Following is a list of commits and pull request made to open source projects during this internship :
+
+    % gazebosim/gz-gui | pr | Added dark mode for drawer and menu buttons | merged
+    % gazebosim/docs | pr |Update ros_installation.md as Jazzy is now released | merged
+    % gazebosim/gz-msgs | issue | MessageFactory::Types returns duplicate message types | opened and fixed
+    % gazebo-web/gzweb | pr | Add missing primitive model support | merged
+    % ros2/ros2_documentation | pr | Changed the description of the clang compile setup | merged
+    % ros-navigation/nav2 | pr | precomputeDistanceHeuristic is now computed once | merged
+    % ros-control/gz_ros_control | pr | Changed command for gui launch to gz instead of ign | merged 
+    % FreeCAD/FreeCAD | issue | Start: Thumbnail is not displayed if name of file contains dot | open
+    % FreeCAD/FreeCAD | pr | Gui: allow LineEdit to grow with text - fixes #17747
+    % FreeCAD/FreeCAD | code review | Assembly: prescribed motions
+    \begin{table}[H]
+        \centering
+        \mbox{}\clap{
+        \begin{tabular}{|l|l|l|l|}
+            \hline
+            \textbf{Repository} & \textbf{Type} & \textbf{Description} & \textbf{Status} \\ \hline
+            gazebosim/gz-gui & pr & Added dark mode for drawer and menu buttons & merged \\ \hline
+            gazebosim/docs & pr & Update ros\_installation.md as Jazzy is now released & merged \\ \hline
+            gazebosim/gz-msgs & issue & MessageFactory::Types returns duplicate message types & open\\ \hline
+            gazebo-web/gzweb & pr & Add missing primitive model support & merged \\ \hline
+            ros2/ros2\_documentation & pr & Changed the description of the clang compile setup & merged \\ \hline
+            ros-navigation/nav2 & pr & precomputeDistanceHeuristic is now computed once & merged \\ \hline
+            ros-control/gz\_ros\_control & pr & Changed command for gui launch to gz instead of ign & merged \\ \hline
+            FreeCAD/FreeCAD & issue & Start: Thumbnail is not displayed if name of file contains dot & open \\ \hline
+            FreeCAD/FreeCAD & pr & Gui: allow LineEdit to grow with text - fixes \#17747 & open \\ \hline
+            FreeCAD/FreeCAD & code review & Assembly: prescribed motions & open \\ \hline
+        \end{tabular}
+        }
+        \caption{Contributions to open source projects}
+        \label{tab:contributions}
+    \end{table}
+
+    The reverse engineering efforts of the GO2 battery and the inernal firmware that were documented in section \ref{section:go2_battery}
 
 
-    TEST \cite{zhang2020falco}
+
+    % TODO : add in annex working configuration of TARE for a GO2
+
 
 \newpage
 \section{Conclusion}

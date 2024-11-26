@@ -1,0 +1,41 @@
+
+\begin{tikzpicture}[>=latex,line join=bevel,]
+  \pgfsetlinewidth{1bp}
+%%
+\pgfsetcolor{black}
+  % Edge: t___cloud_registered -> n___pointcloud_to_laserscan
+  \draw [->] (110.35bp,45.0bp) .. controls (111.44bp,45.0bp) and (112.54bp,45.0bp)  .. (123.71bp,45.0bp);
+  % Edge: n___pointcloud_to_laserscan -> t___scan
+  \draw [->] (290.98bp,58.105bp) .. controls (303.05bp,60.467bp) and (315.21bp,62.845bp)  .. (335.8bp,66.875bp);
+  % Edge: n___pointcloud_to_laserscan -> t___rosout
+  \draw [->] (290.98bp,31.895bp) .. controls (303.05bp,29.533bp) and (315.21bp,27.155bp)  .. (335.8bp,23.125bp);
+  % Node: t___scan
+\begin{scope}
+  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+  \pgfsetstrokecolor{strokecol}
+  \draw (390.0bp,90.0bp) -- (336.0bp,90.0bp) -- (336.0bp,54.0bp) -- (390.0bp,54.0bp) -- cycle;
+  \draw (363.0bp,72.0bp) node {/scan};
+\end{scope}
+  % Node: t___cloud_registered
+\begin{scope}
+  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+  \pgfsetstrokecolor{strokecol}
+  \draw (110.0bp,63.0bp) -- (0.0bp,63.0bp) -- (0.0bp,27.0bp) -- (110.0bp,27.0bp) -- cycle;
+  \draw (55.0bp,45.0bp) node {/cloud\_registered};
+\end{scope}
+  % Node: n___pointcloud_to_laserscan
+\begin{scope}
+  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+  \pgfsetstrokecolor{strokecol}
+  \draw (223.0bp,45.0bp) ellipse (99.0bp and 18.0bp);
+  \draw (223.0bp,45.0bp) node {/pointcloud\_to\_laserscan};
+\end{scope}
+  % Node: t___rosout
+\begin{scope}
+  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+  \pgfsetstrokecolor{strokecol}
+  \draw (390.0bp,36.0bp) -- (336.0bp,36.0bp) -- (336.0bp,0.0bp) -- (390.0bp,0.0bp) -- cycle;
+  \draw (363.0bp,18.0bp) node {/rosout};
+\end{scope}
+%
+\end{tikzpicture}
