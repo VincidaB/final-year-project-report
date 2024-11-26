@@ -268,16 +268,8 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         \subsubsection{Mechanical modifications}
         As it arrived, the six-wheeled platform only consisted of a stainless steel chassis, six DC motors, and wheels. The platform required several mechanical modifications to accommodate the necessary components for autonomous operation. Specifically, it needed a mount for a LIDAR sensor and an embedded computer on its top surface (see Figure \ref{fig:LIDAR_mount}). Additionally, a mounting solution for the motor drivers inside the chassis was essential (see Figure \ref{fig:motor_driver_mount}). These modifications were designed and implemented to ensure proper integration of all components while maintaining the structural integrity of the platform (see Figure \ref{fig:full_cad_model}).
-
-        \begin{figure}[htbp]
-            \centering
-            LIDAR MOUNT CAD
-            %\includegraphics[width=0.8\textwidth]{images/lidar_mount_cad.png}
-            \caption{Drawing of CAD model of the LIDAR sensor and embedded computer mount}
-            \label{fig:LIDAR_mount}
-        \end{figure}
         
-        \begin{figure}[htbp]
+        \begin{figure}[H]
             \centering
             %MOTOR DRIVER MOUNT CAD
             \includegraphics[width=0.3\textwidth]{Images/Motor_driver_holder.pdf}
@@ -285,7 +277,9 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \label{fig:motor_driver_mount}
         \end{figure}
         
-        \begin{figure}[htbp]
+        To further accelerate development of the construction of the robots, a 3D printer was purchased and set up by myself. We chose the Bambu Lab P1P 3D printer for its large enclosed build volume, which would allow us to print engineering materials such as ABS, Nylon, or carbon fiber filed materials. The printer was set up in the lab and was used to print the parts needed for the mechanical modifications of the platforms. The printer was also used to print parts for other projects in the lab, such as storage for VR headsets, or brackets of all kind.
+
+        \begin{figure}[H]
             \centering
             \includegraphics[width=0.8\textwidth]{Images/RoverV1.pdf}
             \caption{Drawing of CAD model of the modified six-wheeled platform's top}
@@ -388,18 +382,27 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             
         %Explain the state reached (nav2 navigation kinda working) and why the other platform was created
 
-        The 6-wheeled rover, with its stainless steel frame and weak DC motors lacking encoders, was not the most suitable platform for the task of autonomous navigation. The lack of encoders on the motors made odometry calculations based on the LIDAR and inertial measurement unit unreliable. An attempt was made to do closed-loop control with the aforementioned odometry, but the noise and the lack of per-wheel odometry made it impossible to have a stable and reliable control. I then decided to create a new platform using closed-loop stepper motors, also called servos. Their closed-loop control and high torque at low speed would make them ideal for slow movements, thereby making the task of autonomous navigation feasible.
+        The 6-wheeled rover, with its stainless steel frame and weak DC motors lacking encoders, was not the most suitable platform for the task of autonomous navigation. The lack of encoders on the motors made odometry calculations based on the LIDAR and inertial measurement unit unreliable. An attempt was made to do closed-loop control with the aforementioned odometry, but the noise and the lack of per-wheel odometry made it impossible to have a stable and reliable control.
 
-        %! Add a reference to this figure !!
+        After encountering too many issues with the existing platform, we decided to create a new platform using closed-loop stepper motors, also called servos. Their closed-loop control and high torque at low speed would make them ideal for slow movements, thereby making the task of autonomous navigation feasible. A comparison of both platforms can be seen in Figure \ref{fig:rover_comparison}.
+
         \begin{figure}[h!]
             \centering 
             \subfigure[Version 1 of the rover]{\includegraphics[width=0.4\textwidth, angle=270]{Images/roverv1closed.jpg}}
             \subfigure[Version 2 of the rover]{\includegraphics[width=0.4\textwidth, angle=270]{Images/roverv2openened.jpg}}       
             \caption{Rover version 1 and 2}
+            \label{fig:rover_comparison}
         \end{figure}
 
+        The new chassis is entirely 3D printed, making it fit exactly to our needs as can be seen by the CAD model in Figure \ref{fig:crawlerv2_cad}. This make the overall platform more compact and lighter. The LIDAR was also placed in the front at an angle to more easily cover the ground, which is needed for the terrain analysis that will be described in section \ref{section:terrain_analysis}. The new platform is now four wheeled, but was designed with modularity in mind to be able to add two additional wheels and motors in the center of the chassis.
 
-        %Explain how the chassis was designed to fit the new closed loop, motors
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.8\textwidth]{Images/roverv2.pdf}
+            \caption{Drawing of CAD model of the new rover with the top removed}
+            \label{fig:crawlerv2_cad}
+        \end{figure}
+
 
     \subsection{Quadcopter setup}
             
@@ -484,8 +487,28 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         
         \subsubsection{Communication with the quadruped}
 
+        To send command to the quadruped, Unitree offers a controller, a phone app, a SBUS port, an UWB remote, and an upgraded version of the robot that support CycloneDDS communication via Ethernet.
+
+        The controller uses both Bluetooth and a longer range 2.4GHz radio to communicate with the robot. This controller is only capable of sending movement commands, predefined non-modifiable actions, and initiate calibration. The Bluetooth seems to be used for initialization but is not required at longer ranges and all control commands are sent via the 2.4GHz radio.
+
+        The phone app uses WebRTC, a real time communication protocol commonly used for web browser communication. In the case of the quadruped, the robot can either act as an access point (AP mode) and the phone then connects to the Wifi created, or both the phone and robot can connect to an existing Wifi network in station mode (STA mode). This communication is not encrypted and thus provides an easy communication to the robot that we can emulate \cite{go2_webrtc}. Compared to the remote control, we also get information back from the robot, including but not limited to : joint angles, preprocessed LIDAR data, odometry estimation, camera feed. This communication method has the advantage that it is simple and gives us quite a bit of data, that is why it was used for the first control tests of communication between a laptop and the robot. It however doesn't provide data at a high rate of speed at only 10 Hz for most of the data, and doesn't give access to the raw LIDAR measurements for example. It also doesn't allow us to control each joint individually if we wanted to implement additional gaits in the future.
+
+        The SBUS, or Serial Bus, port that is present on the top of the robot is meant for use with long range radio controllers, often used un radio controlled drones. This only gives us high level control of the movement and does not provide any data back.
+
+        The UWB, or Ultra Wide Band, remote is an optional feature of the robot that provides the capability of person following to the robot. This remote also features a small joystick for manual control and uses the same technologies as the main controller. The UWB uses multiple antennas in the robot to estimate the position of the tracker that a person carries, giving a rough estimation of the position of the remote which the robot can then follow. However, this is not something that will help us in the control of the robot.
+
+        Finally, the robot also features as can be seen in Figure \ref{fig:handle_cover}, and as will be discussed in section \ref{section:go2_battery} this can provide a Data Distribution Service (DDS) using the CycloneDDS protocol. This protocol was developed by Eclipse and is an implementation of the Object Management Group (OMG) DDS. This protocol is used in many industrial applications and is known for its low latency and high reliability. CycloneDDS is one of the ROS MiddleWare (RMW) that can be used, and it is often praised for it's low latency and low CPU and memory usage. This way of communicating also offers the most control from very low level commands to each joint and raw LIDAR data, up to high level commands like predefined gaits and actions defined by Unitree. This is the communication method that we will use for the final implementation of the project.
+    
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.8\textwidth]{Images/go2-communication.pdf}
+            \caption{Communication methods with the GO2 robot}
+            \label{fig:go2_communication}
+        \end{figure}
+
         % explain how we use webRTC to communicate with the robot (explain whatit is and how it works)
-        % explain how we could use the cyclondeDDS because we have access to the newly jailbreaked robot
+        % explain how we could use the cycloneDDS because we have access to the newly jailbreaked robot
         
     \subsection{Issues encountered}
         \label{section:go2_battery}
@@ -819,7 +842,6 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
     
 \newpage
 \section{Simulation}
-    % TODO add paragraph for why simulation is needed and what we want to achieve with it
 
     In robotics, simulation is a key part of the development process. Unlike traditional software development, the testing of algorithms needs to be done on the physical platform, which can be time consuming and costly. Simulation allows for the testing of algorithms in a controlled environment, where the behavior of the robot can be closely mimicked. It also removes any risks associated with testing on the physical platform, such as damaging the robot or causing injury. 
 
