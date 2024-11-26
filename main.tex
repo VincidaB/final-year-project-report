@@ -375,6 +375,12 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         \subsubsection{ROS 2 setup}
         
+        As the distribution of Linux that we use on the Jetson is derived from Ubuntu 22.04, ROS2 can be installed using the Debian packages provided by the ROS2 foundation. The installation process is straightforward \cite{ros2_installation} and is well documented on the ROS2 website. ROS2 packages are often built for multiple architecture include x86, and ARM32. The Jetson Orin being an ARM64 architecture, the packages are directly compatible with it. 
+
+        The specific distribution of Linux that we decided to install is Jetson Linux 36.4, also called Jetpack 6.1. This distribution is based on Ubuntu 22.04 and the Linux kernel 5.15. The main advantage of using this Linux distribution over any other is the included Nvidia drivers, and the included libraries like CUDA\cite{cuda}, TensorRT \cite{tensorrt}, cuDNN\cite{cudnn}, VPI and many others. These libraries are essential for the use of the Jetson Orin as a computer vision and machine learning platform. The inference capabilities were not explored during this internship, but the embedded computer could be used for future sim to real \cite{peng2018sim} experiments. 
+
+        In ROS2 a controller was created for handling the differential control of the robot. This packaged folloed the interfaces provided by ros2\_control
+        
         % What nodes did I create, explain the setup with nav2 working.
         % TODO : Write a small paragraph in order to explain how ROS2 is setup and what external packages we need
 
@@ -427,8 +433,10 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \subsubsection{Software architecture and setup}
                 
                 % don't know what planner to use, something complicated or just a grid coverage planner
+                Time didn't allow for the implementation of a full navigation stack on the drone. As such, only a theoretical architecture, similar to the previous platform, was planned.
         
-            \subsubsection{Issues encountered}
+                % TODO : add diagram of how everything should have connected
+                % TODO : and explaine how far things went 
             
     \subsection{Quadruped platform setup}
 
@@ -589,7 +597,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         
         
         \subsubsection{LIDAR inertial odometry}
-        
+        \label{section:lidar_inertial_odometry}
         LIDARs are often paired with Inertial Measurement Units (IMUs) as algorithms can be conceived to make use of both the LIDAR and the IMU for odometry. Registration of features of the last scan of the LIDAR with previous ones provide long term accuracy and minimize potential drift, while the IMU provide a high rate of movement data that can be used to both facilitate the alignment, as well as to undistort the scans that were captured during fast movements.
         
         As the Livox Mid-360 also carries an IMU, this is the reason why I turned myself to those kinds of algorithms for the odometry. 
@@ -666,17 +674,68 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \end{figure}
 
         This terrain analysis paradigm is derived from the works of Ji Shang et al. on fast likelihood-based collision avoidance \cite{zhang2020falco}, as is the local path planning that will be described in section \ref{section:local_path_planning}.
-        
+
+        % TODO add refewrence to this figure
+        \begin{figure}[H]
+            \centering
+            \begin{tikzpicture}[scale=1,font=\small]
+                % Robot frame (datum)
+                \draw[->,red] (0,0,0) -- (1,0,0) node[anchor=north east]{$x$};
+                \draw[->,blue] (0,0,0) -- (0,1,0) node[anchor=north west]{$z$};
+                \draw[->,green] (0,0,0) -- (0,0,1) node[anchor=south]{$y$};
+
+                \node at (0.5,2,1.2) {Robot's frame};
+
+                % Spheres
+                \draw[fill=gray, opacity=0.2] (0,0,0) circle (2.5cm);
+                \node at (-1,0,1.2) {No decay};
+
+                \draw[fill=gray, opacity=0.2] (0,0,0) circle (5cm);
+                \node at (-5,0,2.2) {Clearing};
+                \node[text width=2cm, align=center] at (-2.75,0,2.2) {Decays after time $s$};
+
+                % World frame (datum)
+                \draw[->,red] (-5,-5,0) -- (-4,-5,0) node[anchor=north east]{$x$};
+                \draw[->,blue] (-5,-5,0) -- (-5,-4,0) node[anchor=north west]{$z$};
+                \draw[->,green] (-5,-5,0) -- (-5,-5,1) node[anchor=south]{$y$};
+
+                \node at (-4.5,-3.25,1.2) {World frame};
+
+            \end{tikzpicture}
+            \caption{Decay of the terrain analysis in different zones}
+            \label{fig:decay}
+        \end{figure}
+
+        The point cloud is split into three zones. In the first zone, the one closest to the robot, the terrain analysis voxels don't get modified but can only get added. This is done to ensure that the robot doesn't forget obstacles when they get closer than the minimum distance the LIDAR can measure. This value was set to $0.1\,\text{m}$ for the quadruped for example.
+        The second zone is the zone within which a voxel that has not been hit by the LIDAR for a certain amount of time $s$ get removed. This ensures that the robot doesn't get by obstacles that have been removed from the point cloud, like in the case of a human passing by. The third and final zone is the zone within which we clear any terrain voxel present. This is done to ensure
 
     \subsection{Planning}
-        The problem of path planning in 2D is a well known problem in robotics and has been solved many times. However, the problem of path planning in 3D is much more complex that has only recently found efficient solutions. 
+
+        The problem of path planning in 2D is a well known problem in robotics and has been solved many times. However, the problem of path planning in 3D is much more complex, anly recently have efficient solutions been found. 
 
         \subsubsection{2D path planning}
         % Using nav2 as a base and how we convert from a 3D point cloud to a 2D one 
-        As a first test of the wheeled and quadruped platform, a simple 2D navigation was put in place to showcase the navigation of the platforms on flat ground. Nav2 \cite{macenski2020marathon2} was used with a simple Smac planner \cite{macenski2024smac} to navigate the platforms. The 3D point cloud was converted to a 2D one by taking only a range of the points relative to the robot's height. This was done to showcase the navigation capabilities of the platforms and to test the odometry algorithms.
+        As a first test of the wheeled and quadruped platform, a simple 2D navigation was put in place to showcase the navigation of the platforms on flat ground. Nav2 \cite{macenski2020marathon2} was used with a simple Smac planner \cite{macenski2024smac} to navigate the platforms. The 3D point cloud was converted to a 2D one by taking only a range of the points relative to the robot's height, the corresponding topic graph can be seen in Figure \ref{fig:pointcloud_to_laserscan}. This was done to showcase the navigation capabilities of the platforms and to test the odometry algorithms. Nav2 was chosen as it is a well known and well documented package that is compatible with every version of ROS2. 
+                
+        \begin{figure}[H]
+            \centering
+            \label{fig:nav2_costmaps}
+            \includegraphics[width=0.8\textwidth]{Images/nav2_costmaps_alpha.png}
+            \caption{Nav2 creating multiple costmaps in a simulation}
+        \end{figure}
+        
+        In Figure \ref{fig:nav2_costmaps}, the costmaps, used for navigation, generated by Nav2 can be seen. They represent areas that are free to navigate, areas that are occupied by obstacles, and areas that are unknown. In Figure \ref{fig:nav2_costmaps} they can be seen as purple and blue colored zones around walls and obstacles.  
 
-        % TODO add a simple nav2 costmap image herewq
-
+        \begin{figure}[h]
+            \centering
+            \resizebox{0.75\textwidth}{!}{%
+            \input{graphs/pointcloudtolaserscan.tex}
+            }   
+            \caption{Conversion from a 3D pointcloud to a 2D scan}
+            \label{fig:pointcloud_to_laserscan}
+        \end{figure}
+        
+        
         \subsubsection{3D local path planning}
         \label{section:local_path_planning}
 
@@ -748,8 +807,9 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \label{fig:tare_local_global}
         \end{figure}
 
+        % TODO : explain the viewpoint selection with a figure 
 
-
+        
         \subsubsection{MTARE-PLANNER}
         % multi agent exploration
         \subsubsection{Comparison of exploration algorithms}
@@ -771,31 +831,111 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \subsubsection{Gazebo}
             Gazebo is a well known simulation environment in the robotics community. It is widely used and has a large community. It is open source and has a lot of plugins available, for simulation sensors, motion platforms and more. As I was already familiar with it, I first looked at it to build a crude simulation of the 6 wheeled platform. Thanks to the use of ROS2 and ROS2-control for the drive train, I was able to quickly build a simulation of the platform. 
 
-            I was also able to find a working simulation of the Livox Mid-360 LIDAR sensor we chose for every platform. The package \cite{livox_lidar_simulation_fork} was a fork of the original simulation package from Livox \cite{livox_laser_simulation} and was modified to work with the specific LIDAR we are using. 
+            I was also able to find a working simulation of the Livox Mid-360 LIDAR sensor we chose for every platform. The package \cite{livox_lidar_simulation_fork} was a fork of the original simulation package from Livox \cite{livox_laser_simulation} and was modified to work with the specific LIDAR we are using.
+            
+            
+
         \subsubsection{Nvidia Isaac Sim}
 
-            Isaac sim is a high fidelity simulation environment developed by Nvidia. This simulation environment uses a PhysX based physics engine and is able to simulate multiple platforms at once. It is also able to simulate sensors like cameras, LIDARs and IMUs. The main advantage of Isaac sim is its high fidelity and parallelization. However, this also brings a lot of complexity and the need for a RTX GPU to run it.
-
+            Isaac sim is a high fidelity simulation environment developed by Nvidia. This simulation environment uses a PhysX based physics engine and is able to simulate multiple platforms at once. It is also able to simulate sensors like cameras, LIDARs and IMUs. The main advantage of Isaac sim is its high fidelity and parallelization. However, this also brings a lot of complexity and the need for an RTX GPU to run it.
+            
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.69\textwidth]{Images/isaac_sim.png}
+                \caption{View of some built-in robots in Isaac Sim}
+                \label{fig:isaac_sim_robots}
+            \end{figure}
+            
             The high overhead, complexity, low portability and the fact that it was not open source made me choose Gazebo over Isaac sim for the simulation of the platforms.
 
             In addition, the LIDAR we are using has a non-repetitive pattern, which is not currently supported by Isaac sim and would have required a lot of work to simulate.
 
             I did experiment with Isaac sim to simulate the quadruped platform, as it was the most complex platform to simulate and there existed a simulation of the robot in Isaac sim.
+
+            Some built-in robots in Isaac sim are shown in Figure \ref{fig:isaac_sim_robots}. We can also observe the high fidelity of the simulation environment and the lighting effects that Isaac Sim is capable of.
+
+            I did end up experimenting with Isaac Sim for simulating the quadruped platform, as examples are available for reinforcement learning of locomotion for quadrupeds. The simulation of the quadruped platform in Isaac Sim can be seen in Figure \ref{fig:isaac_sim_quadruped}.
+
+
+
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.5\textwidth]{Images/go2_rl_training.png}
+                \caption{Quadruped platform reinforcement learning training in Isaac Sim}
+                \label{fig:isaac_sim_quadruped}
+            \end{figure}
+
     \subsection{Simulating sensors}
+
+        To have an accurate simulation that closely mimics the physical platform, the sensors on the physical platform need to be simulated. The sensors that were simulated were the LIDAR and the IMU. Even though not necessary, the camera and depth camera were also simulated to have a complete simulation of the platform.
+
         \subsubsection{LIDAR}
+
+        Gazebo comes with a way of simulating 2D LIDARs, but no built-in way of simulating 3D LIDARs. This functionality was introduced in a recent version of Gazebo, but it's incompatibility with older Gazebo worlds and robot model made it difficult to justify changing version when a lot of work was already invested in the simulation. Moreover, the LIDAR we are using has a non-repetitive pattern, which is not currently supported by Gazebo build in GPU LIDAR that is present in the newer version. 
+        
+                \begin{figure}[H]
+                    \centering
+                    \subfigure[Gazebo simulation environment]{\includegraphics[height=0.25\textwidth]{Images/croped lidar simulation gazebo.png}}
+                    \subfigure[Point cloud from simulated LIDAR]{\includegraphics[height=0.25\textwidth]{Images/croped lidar simulation rviz2.png}}
+                    \caption{Simulated LIDAR in Gazebo and point cloud in RVIZ2}
+                    \label{fig:lidar_simulation}
+                \end{figure}
+        
+        That is why I relied on a fork \cite{livox_laser_simulation_RO2} of Livox original simulation plugin was used. This plugin offers a simulation of the MID-360 LIDAR that we are using, and offers a way to simulate the exact messages that the LIDAR driver would send. Additionally, the package offers a close simulation of the non repeating pattern of the LIDAR by using recorded laser angle measured from the real LIDAR and using this data to simulate the LIDAR in Gazebo. As we can see in Figure \ref{fig:lidar_simulation}, the LIDAR simulation is close to the real LIDAR point cloud, and does not feature repeating line of traditional multi-line 3D LIDARs. No effort were made to make this simulation of the LIDAR more accurate, however, we can note that in Figure \ref{fig:lidar_simulation}, the point cloud does not feature the same blind spots as the real LIDAR as can be seen in Figure \ref{fig:real_lidar_scan}. This is a point that could be improved in the future.
+
 
         \begin{figure}[H]
             \centering
-            \subfigure[Gazebo simulation environment]{\includegraphics[height=0.25\textwidth]{Images/croped lidar simulation gazebo.png}}
-            \subfigure[Point cloud from simulated LIDAR]{\includegraphics[height=0.25\textwidth]{Images/croped lidar simulation rviz2.png}}
-            \caption{Simulated LIDAR in Gazebo and point cloud in RVIZ2}
+            \includegraphics[width=0.7\textwidth]{Images/ldiar_scan_deadzone.png}
+            \caption{Blind spots in the ceiling and the floor, in a real static LIDAR scan}
+            \label{fig:real_lidar_scan}
         \end{figure}
 
         \subsubsection{IMU}
+
+        Gazebo has a built-in IMU sensor that can be added to the robot's description, which our mapping algorithm needs for point cloud deskewing and alignment as discussed in \ref{section:lidar_inertial_odometry}. The IMU sensor can be configured to have a certain update rate, noise, and bias. Noise can be added to the IMU sensor to simulate the noise in the IMU data. An example of an IMU sensor configuration can be seen in listing \ref{lst:imu_sensor}.
+
+    \vspace{10pt }
+\begin{minipage}{0.9\textwidth}
+\begin{lstlisting}[style=xmlStyle, caption={IMU Sensor Configuration}, label={lst:imu_sensor}]
+<gravity>true</gravity>
+<sensor name="imu_sensor" type="imu">
+    <always_on>true</always_on>
+    <update_rate>100</update_rate>
+    <visualize>true</visualize>
+    <topic>default_topic</topic>
+    <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+    <topicName>imu</topicName>
+    <bodyName>imu</bodyName>
+    <updateRateHZ>100.0</updateRateHZ>
+    <gaussianNoise>0.0</gaussianNoise>
+    <xyzOffset>0 0 0</xyzOffset>
+    <rpyOffset>0 0 0</rpyOffset>
+    <frameName>imu</frameName>
+    <initial_orientation_as_reference>false</initial_orientation_as_reference>
+    <noise>
+        <type>gaussian</type>
+        <rate>
+            <x>0.01</x>
+            <y>0.01</y>
+            <z>0.01</z>
+        </rate>
+        <acceleration>
+            <x>0.01</x>
+            <y>0.01</y>
+            <z>0.01</z>
+        </acceleration>
+    </noise>
+    </plugin>
+</sensor>
+\end{lstlisting}
+\end{minipage}
+
         \subsubsection{Camera}
 
         In gazebo, cameras can be simulated by modifying the robot's description and adding a sensor tag to the robot's description. The camera sensor can be configured to have a certain field of view, resolution, and clipping planes. The camera sensor can also be configured to always be on, to have a certain update rate, to visualize the image, and to publish the image to a certain topic. An example of a camera sensor configuration can be seen in listing \ref{lst:camera_sensor}.
 
+\vspace{10pt }
 \begin{minipage}{0.9\textwidth}
 \begin{lstlisting}[style=xmlStyle, caption={Camera Sensor Configuration}, label={lst:camera_sensor}]
 <sensor name="camera" type="camera">
@@ -817,7 +957,8 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
 
         Similarly, a depth camera can be simulated, as we intend to add am Intel RealSense D435 to the quadruped platform. The depth camera can be configured to have a certain field of view, resolution, clipping planes, and update rate. As depth camera tend to be noisy in the depth data, the noise can be added to the depth data. An example of a depth camera sensor configuration can be seen in listing \ref{lst:depth_camera_sensor}. Here, the noise is set to be Gaussian with a mean of 0.0 and a standard deviation of 0.01. Those values were not measured but are a good starting point for the simulation. In the case of the depth camera, the clipping planes are set to 0.05 and 8.0 meters, as the depth camera is not able to see further than 8 meters. The depth camera is also configured to have a reduced resolution of just 640x480 pixels. Both color and depth views can be seen in Figure \ref{fig:cameras_simulation_view}.
-
+        
+\vspace{10pt }
 \begin{minipage}{0.9\textwidth}      
 \begin{lstlisting}[style=xmlStyle, caption={Depth Camera Sensor Configuration}, label={lst:depth_camera_sensor}]
 <sensor name="camera" type="depth">
