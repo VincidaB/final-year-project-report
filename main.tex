@@ -231,28 +231,8 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
 \section{Introduction}
 
-\begin{tikzpicture}[x=2.2cm,y=1.4cm]
-    \readlist\Nnod{4,5,4,5,3,2} % number of nodes per layer
-    % \Nnodlen = length of \Nnod (i.e. total number of layers)
-    % \Nnod[1] = element (number of nodes) at index 1
-    \foreachitem \N \in \Nnod{ % loop over layers
-        % \N     = current element in this iteration (i.e. number of nodes for this layer)
-        % \Ncnt  = index of current layer in this iteration
-        \foreach \i [evaluate={\x=\Ncnt; \y=\N/2-\i+0.5; \prev=int(\Ncnt-1);}] in {1,...,\N}{ % loop over nodes
-        \node[mynode] (N\Ncnt-\i) at (\x,\y) {};
-        \ifnum\Ncnt>1 % connect to previous layer
-            \foreach \j in {1,...,\Nnod[\prev]}{ % loop over nodes in previous layer
-            \draw[thick] (N\prev-\j) -- (N\Ncnt-\i); % connect arrows directly
-            }
-        \fi % else: nothing to connect first layer
-        }
-    }
-    \end{tikzpicture}
-
-    $$
-    \int_\alpha^\beta f(x) dx
-    $$
-    \cite{xu2022fast}
+    % TODO write this introduction
+    EMPTY
 
 
 \newpage
@@ -308,7 +288,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
             Finally, the Pico is connected to an Nvidia Jetson Orin single board computer (SBC) via USB. This connection is used both to reprogram the Pico, and to send speed and direction commands to each motor via a serial communication. 
 
-            Not including the power distribution and regulation system, \ref{fig:overall_electical_system} shows the electrical connections of these components on the modified six-wheeled platform.
+            Not including the power distribution and regulation system, Figure \ref{fig:overall_electical_system} shows the electrical connections of these components on the modified six-wheeled platform.
 
 
             \begin{table}[h!]
@@ -323,11 +303,10 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
                 1   & 0   & PWM     & Forward at PWM speed \\ \hline
                 0   & 1   & PWM     & Reverse at PWM speed \\ \hline
                 \end{tabular}
-                \caption{Motor control signal table}
+                \caption{Motor control signal table, where 1 is a high signal and 0 is a low signal}
                 \label{tab:motor_control}
             \end{table}
 
-            %! Add a reference to this figure !!
             \begin{figure}[H]
                 \centering
                 %OVERALL ELECTRICAL SYSTEM (excluding power)
@@ -355,9 +334,8 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         The robot operating system (ROS) was chosen as the software framework for the platform running on the Jetson Orin embedded computer. Specifically, ROS2 Humble Hawksbill was selected due to its extensive package availability and compatibility with the Jetson Orin's hardware. Indeed, I was made aware of the struggles of another researcher running a ROS based robot on an Nvidia Jetson Nano and how Ubuntu, and ROS version mismatch may bring problems. 
         
-        This version of ROS2 provides a robust and flexible framework for developing and integrating various components of the platform, including sensor processing, navigation, and control. For real-time critical tasks such as motor control and RC radio interrupts, the Raspberry Pi Pico microcontroller was utilized, leveraging its ability to handle low-level, time-sensitive operations. The microcontroller's firmware was developed from the ground up by myself, guaranteeing reliable execution of motor control and interrupt handling tasks. By combining the strengths of ROS2 on the Jetson Orin with the real-time capabilities of the Raspberry Pi Pico, the platform achieves a robust and efficient software architecture that enables seamless integration of autonomous navigation, sensor processing, and manual control.
+        This version of ROS2 provides a robust and flexible framework for developing and integrating various components of the platform, including sensor processing, navigation, and control. For real-time critical tasks such as motor control and RC radio interrupts, the Raspberry Pi Pico microcontroller was utilized, leveraging its ability to handle low-level, time-sensitive operations. The microcontroller's firmware was developed from the ground up by myself, guaranteeing reliable execution of motor control and interrupt handling tasks. By combining the strengths of ROS2 on the Jetson Orin with the real-time capabilities of the Raspberry Pi Pico, the platform achieves a robust and efficient software architecture that enables seamless integration of autonomous navigation, sensor processing, and manual control. This software architecture is illustrated in Figure \ref{fig:SW_architecture}.
 
-        %! Add a reference to this figure !!
         \begin{figure}[H]
             \centering
             %Software stack, from jetpack to ros2 to the nodes to the microcontroller
@@ -373,8 +351,21 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         The specific distribution of Linux that we decided to install is Jetson Linux 36.4, also called Jetpack 6.1. This distribution is based on Ubuntu 22.04 and the Linux kernel 5.15. The main advantage of using this Linux distribution over any other is the included Nvidia drivers, and the included libraries like CUDA\cite{cuda}, TensorRT \cite{tensorrt}, cuDNN\cite{cudnn}, VPI and many others. These libraries are essential for the use of the Jetson Orin as a computer vision and machine learning platform. The inference capabilities were not explored during this internship, but the embedded computer could be used for future sim to real \cite{peng2018sim} experiments. 
 
-        In ROS2 a controller was created for handling the differential control of the robot. This packaged folloed the interfaces provided by ros2\_control
-        
+        In ROS2 a controller was created for handling the differential control of the robot. This packaged followed the interfaces provided by ros2\_control, allowing the seamless control of the robot both in simulation and in real life. The package I created for this is called \texttt{skid\_drive\_controller} and is largely inspired by the differential controller provided by the ros2\_control package.
+
+        \begin{minipage}{0.45\textwidth}
+            As can be seen in Figure \ref{fig:ros_control_diagram}, taken from the ros2\_control documentation, controllers request interfaces from the controller manager. The controller manager has previously received information from sensors, actuators, or systems that want to provide command or state interface. In our case, a modified version of the \texttt{diff\_drive\_arduino} takes care of providing one control interface and one state interface per wheel. Our \texttt{skid\_drive\_controller} then takes care of receiving data like wheel velocity from the state interfaces, and sends commands to the control interfaces. In the case of the Gazebo simulation, the simulator provides the state and command interfaces to the resource manager, which make our controller unaware of the fact that it is running in simulation.
+        \end{minipage}%
+        \hfill
+        \begin{minipage}{0.5\textwidth}
+            \begin{figure}[H]
+            \centering
+                \includegraphics[width=0.99\textwidth]{Images/ros2_control.png}
+                \caption{ROS2\_control architecture}
+                \label{fig:ros_control_diagram}
+                \end{figure}
+        \end{minipage}
+
         % What nodes did I create, explain the setup with nav2 working.
         % TODO : Write a small paragraph in order to explain how ROS2 is setup and what external packages we need
 
@@ -474,13 +465,13 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \label{fig:scanner_and_cad}
         \end{figure}
 
-
-
+        The compute backpack's shell was 3D printed in PETG, as it is less brittle than many other filaments like PLA or ABS. This was done so that the shell be able to withstand potential falls of the robot. The compute backpack with the Jetson Orin, the MID-360 LIDAR, the power regulators and the cabling can be seen in Figure \ref{fig:compute_backpack}. For a development purposes, a video transmitter is also fitted to provide an easy way to see the Jetson's desktop without having to connect a monitor to it. As this is powered by USB, it doesn't require any additional power source.
 
         \begin{figure}[H]
             \centering
-            \color{red}
-            IMAGE OF COMPUTE BACKPACK
+            \includegraphics[width=0.75\textwidth]{Images/go2_backpack.jpg}
+            \caption{Compute backpack mounted on quadruped}
+            \label{fig:compute_backpack}
         \end{figure}
 
 
@@ -813,7 +804,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         Viewpoint candidates are generated by the planner within the local planning horizon (see Figure \ref{fig:tare_local_global}), and on valid positions of the terrain map. Each candidate is then evaluated for the amount of information it would bring to the map. This is done by evaluating the uncovered surface of the map, and evaluating the amount of those areas the viewpoint candidate would cover from the LIDAR's perspective.  
 
-        This method also implements a hierarchical exploration strategy where the entire exploration path rather than maximizing greedily the exploration rate. In contrasts to other methods such as Motion primitive-Based exploration with path-Planner (MBP) \cite{dharmadhikari2020motion} or the Next Best View Planner (NBVP) \cite{bircher2016receding}
+        This method also implements a hierarchical exploration strategy where the entire exploration path is considered, rather than greedily maximizing the exploration rate. In contrasts to other methods such as Motion primitive-Based exploration with path-Planner (MBP) \cite{dharmadhikari2020motion} or the Next Best View Planner (NBVP) \cite{bircher2016receding}, this method is able to explore large environments with a high exploration rate.
 
 
         \begin{figure}[H]
@@ -1087,6 +1078,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 \section{Conclusion}
 %\addcontentsline{toc}{section}{Conclusion}
 
+    % TODO : Write the conclusion
     Conclusion     
 
 \newpage
