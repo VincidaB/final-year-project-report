@@ -202,7 +202,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 \author{BELPOIS Vincent \\ Under the supervision of Dr. Ivan \textsc{Mutis}}
 
 \begin{document}
-
+\emergencystretch 3em
 \date{2024}
 \maketitle
 \thispagestyle{empty}
@@ -254,24 +254,51 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
 \section{Introduction}
 
-    % TODO write this introduction
-    EMPTY
+    The internship took place at the Illinois Institute Technology (IIT) in Chicago, the largest city of the state of the state of Illinois and the Midwest of the United States.
 
+    \subsection{Presentation of IIT}
+
+    The Illinois Institute of Technology (IIT) is a private research university in Chicago, Illinois. It was established in 1940 by the merger of the Armour Institute and Lewis Institute. The university has programs in computer science, architectural and building sciences, mechanical engineering, information technologies, bioenginnering and biomedical engineering, civil engineering, aerospace, aeronautical and astraunotical engineering, chemical engineering, electrical and electronics engineering, and more.
+
+
+    \subsection{Presentation of the lab}
+
+    I was part of the iConSenSe Lab, a lab that focuses on advanced computing, informatics, sensing, and semantics technologies for civil and construction engineering. The lab currently focuses mainly on how virtual and mixed reality can enhance the construction industry, through VR based training. As construction Environments can be dangerous, a VR based training for safety rules and procedures can be very useful, as dangerous scenarios can be simulated safely.
+    But the lab also explores technologies that could improve the construction quality and speed. Specifically, robotics could improve repetitive tasks on construction sites like picking up trash, or moving materials.
+
+
+    \subsection{Context and goal of the project}   
+    
+    The problem we wish to tackle during this internship is the creation of point clouds for quality assurance purposes and progress tracking during construction. This is currently done with stationary 3D scanners that sit on tripods that need to be moved multiple times to cover the whole site. As this scanning process takes a long time to perform, they can not be performed regularly, and they require an operator to be present.
+   
+    We propose a system where multiple robotics agents can explore the construction site autonomously, performing the task daily or while construction is happening. Each agent carries a LIDAR sensor and fuses the data with the other agents in real time. This would allow a continuous digital twin to be made from the captured point cloud data and compared to the building information modeling (BIM) data. This could allow for fine grain inventory tracking of equipment, raw materials in the form of bags, pallets boxes, or piles of aggregate.
+   
+    We demonstrate a solution to this problem by showcasing exploration of a construction site like environment using a wheeled robot and a quadruped robot, with the intention of adding a quadcopter to perform mapping in areas that are inaccessible to the other platforms. This solution currently does not provide collaboration between the different agents but aims to build towards this objective. 
 
 \newpage
 
 \section[Setting up the physical agents]{Setting up the physical agents}
 \label{section:big title}%label to reference section
 
-        Three platforms were used in this project: a six-wheeled platform, a quadcopter, and a quadruped platform. Each platform was chosen for its specific characteristics, with the goal of having a multi-agent system that could explore and map a scene. The wheeled platform was chosen for its stability and ability to carry heavy loads. The quadcopter was chosen for its ability to fly and provide a bird's-eye view of the scene. The quadruped platform was chosen for its ability to climb stairs and navigate bumpy terrain.
+        The goal of this project was to have three different kinds of platforms, to showcase the versatility of the algorithms considered. We chose to focus on a wheeled platform, a quadruped robot, and a quadcopter. Each platform could show its strengths and weakness in certain situations, while the algorithms would remain largely similar between the platforms. This section explains how the various agents were set up in terms of the hardware modifications, the sensors being fitted, and the software setup.
+
+        %Three platforms were used in this project: a six-wheeled platform, a quadcopter, and a quadruped platform. Each platform was chosen for its specific characteristics, with the goal of having a multi-agent system that could explore and map a scene. The wheeled platform was chosen for its stability and ability to carry heavy loads. The quadcopter was chosen for its ability to fly and provide a bird's-eye view of the scene. The quadruped platform was chosen for its ability to climb stairs and navigate bumpy terrain.
 
     \subsection{Wheeled platform setup}
 
         The wheeled platform was chosen for its stability on flat terrain and with other projects in mind, its ability to carry heavy loads. The intent was to have a robotic arm mounted for other projects. Some previous work had already been done on the platform, but the person was apparently unsuccessful. These earlier attempts had left the platform in a partially modified state, requiring a comprehensive reassessment and redesign of both the mechanical and electrical systems. Despite these setbacks, the robust chassis of the six-wheeled platform still presented an excellent foundation for our project, offering the potential for further development.
 
         \subsubsection{Mechanical modifications}
-        As it arrived, the six-wheeled platform only consisted of a stainless steel chassis, six DC motors, and wheels. The platform required several mechanical modifications to accommodate the necessary components for autonomous operation. Specifically, it needed a mount for a LIDAR sensor and an embedded computer on its top surface (see Figure \ref{fig:LIDAR_mount}). The inside was reserved for the motors, battery, and power circuitry. Additionally, a mounting solution for the motor drivers inside the chassis was essential (see Figure \ref{fig:motor_driver_mount}), as the previous version didn't secure them in place and had several drivers stop functioning. These modifications were designed and implemented to ensure proper integration of all components while maintaining the structural integrity of the platform, the integration of the LIDAR and the embedded computer can be seen in Figure \ref{fig:full_cad_model}.
+        As it arrived, the six-wheeled platform only consisted of a stainless steel chassis, six DC motors, and wheels, as can be seen in Figure \ref{fig:wheeled_latform}. The platform required several mechanical modifications to accommodate the necessary components for autonomous operation. Specifically, it needed a mount for a LIDAR sensor and an embedded computer on its top surface (see Figure \ref{fig:motor_driver_mount}). The inside was reserved for the motors, battery, and power circuitry. Additionally, a mounting solution for the motor drivers inside the chassis was essential (see Figure \ref{fig:motor_driver_mount}), as the previous version didn't secure them in place and had several drivers stop functioning. These modifications were designed and implemented to ensure proper integration of all components while maintaining the structural integrity of the platform, the integration of the LIDAR and the embedded computer can be seen in Figure \ref{fig:full_cad_model}.
         
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.5\textwidth]{Images/wheeled_platform_empty.jpg}
+            \caption{Chassis of the six-wheeled platform during the installation of the motor drivers}
+            \label{fig:wheeled_latform}
+        \end{figure}
+
+
         \begin{figure}[H]
             \centering
             %MOTOR DRIVER MOUNT CAD
@@ -644,7 +671,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         \begin{figure}[H]
             \centering
-            \includegraphics[width=0.9\textwidth]{Images/scan_basement.png}
+            \includegraphics[width=0.9\textwidth]{Images/scan_basement_no_bg.png}
             \caption{Scan of a large IIT basement (150m in length) showing the drift of the odometry. Each color represents a 10s scan.} 
             \label{fig:scan_basement}
         \end{figure}
@@ -666,7 +693,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         
         \subsubsection{Comparison of LIDAR inertial odometry algorithms}
 
-        The comparison of LIDAR inertial odometry algorithms was chosen as it is the data that is available to us. LIDAR inertial odometry algorithms can be divided in two categories based on how the LIDAR and IMU data are fused : loosely coupled and tightly coupled.
+        I chose to compare LIDAR inertial odometry algorithms as it is the sensor readings available to us. LIDAR inertial odometry algorithms can be divided in two categories based on how the LIDAR and IMU data are fused : loosely coupled and tightly coupled.
 
         Loosely coupled methods estimate the state of each sensor independently, combines the measurement with weights, and then determines the position of the robot. Those methods are useful when both sensors are independent and changes to them want to be tested. The weights can also be changed depending on the sensors used and on their accuracy and noise, or dynamically if a sensor fails or malfunctions. However, we have a LIDAR package that integrates an IMU, making the aforementioned benefits not relevant to us.
 
@@ -675,9 +702,9 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         LOAM (LIDAR Odometry And Mapping) \cite{lee2024lidar} was the first loosely coupled method to be proposed and offered low computational requirements. It used the IMU measurements to estimate velocity while the LIDAR measurement used the velocity estimation for undistortion to offer better position estimation. LeGo-LOAM \cite{shan2018lego} improved on the works of LOAM by improving the performance of the pose estimation and by adding ground segmentation, making the method more robust in ground based applications.
 
-        As for tightly coupled methods to be proposed in the Zebedee paper \cite{bosse2012zebedee} showed the great accuracy the tightly coupled methods can offer. It demonstrated stable mapping of a scene by placing a 2D LIDAR on a spring mobile base. LIPS \cite{geneva2018lips} formalized the closest point plane representation and added IMU preintegration for more accurate pose estimation. Ye et al. \cite{ye2019tightly} added joint optimization of the LIDAR and IMU measurements, improving the performance in high drift scenarios in long term mapping. This paper also added a rotation-contrained refinement which improves the consistency of the global map.
-        FAST-LIO \cite{xu2021fast} greatly improved the performance of previous works by introducing the use of a tightly coupled iterated Kalman Filter. The high computing efficiency of the proposed gain calculation formula improves the performance, making this method interesting for real time applications on embedded systems. FAST-LIO2 \cite{xu2022fast} improved on FAST-LIO by getting rid of the feature extraction step and replacing it registration to the global map. It also improved performance by switching to an incrementally updated kd-tree data structure for map storage. 
-        POINT-LIO \cite{he2023point} employs a different method to the previously mentioned algorithms by using a point-wise position estimation providing a much higher frequency of odometry updates.  
+        As for tightly coupled methods, one of the first to be proposed is in the Zebedee paper \cite{bosse2012zebedee} and showed the great accuracy tightly coupled methods can offer. It demonstrated stable mapping of a scene by placing a 2D LIDAR on a spring mobile base. LIPS \cite{geneva2018lips} formalized the closest point plane representation and added IMU preintegration for more accurate pose estimation. Ye et al. \cite{ye2019tightly} added joint optimization of the LIDAR and IMU measurements, improving the performance in high drift scenarios in long term mapping. This paper also added a rotation-contrained refinement which improves the consistency of the global map.
+        FAST-LIO \cite{xu2021fast} greatly improved the performance of previous works by introducing the use of a tightly coupled iterated Kalman Filter. The high computing efficiency of the proposed gain calculation formula improves the performance, making this method interesting for real time applications on embedded systems. FAST-LIO2 \cite{xu2022fast} improved on FAST-LIO by getting rid of the feature extraction step and replacing it with a registration to the global map. It also improved performance by switching to an incrementally updated kd-tree data structure for map storage. 
+        POINT-LIO \cite{he2023point} employs a different method to the previously mentioned algorithms by using a point-wise position estimation, providing a much higher frequency of odometry updates. As far as I am aware, this is the method used by Unitree in the GO2 for the LIDAR odometry they perform.
 
         \label{section:etatArt}
 
@@ -686,7 +713,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \label{section:terrain_analysis}
         % explain the two terrain analysis we do on the acquired point cloud
 
-        To determine the navigable and non-navigable areas, the aligned point cloud gathered by the LIDAR and the odometry are analyzed. The first analysis is one at a closer range, while the other has a longer range and a longer decay time. The topics that the two analysis subscribe and publish to are shown in Figure \ref{fig:terrain_analysis}. The extended range analysis is used by some planners to determine the best path to take while the close range analysis is used to determine the immediate surroundings of the robot as is showcased in Figure \ref{fig:terrain_analysis}.
+        To determine the navigable and non-navigable areas, the aligned point cloud gathered by the LIDAR and the odometry are analyzed. The first analysis is done at a close range, while the other has a longer range and a longer decay time. The topics that the two analysis subscribe and publish to are shown in Figure \ref{fig:terrain_analysis}. The extended range analysis is used by some planners to determine the best path to take while the close range analysis is used to determine the immediate surroundings of the robot as is showcased in Figure \ref{fig:terrain_analysis_comparison}.
 
         % The following figure shows that both terrain_analysis and terrain_analysis_ext 
         % subscribe to /odom, /registered_scan and publish /terrain_map and /terrain_map_ext respectively.
@@ -716,13 +743,12 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         % TODO explain the algo used
         
         % TODO add a comparaison of the two obtained opontclouds
-
-        %! add reference to this figure
         \begin{figure}[H]
             \centering
             \subfigure[Close range terrain analysis]{\includegraphics[width=0.45\textwidth]{Images/terrainAnalysis.png}}
             \subfigure[Extended terrain analysis]{\includegraphics[width=0.45\textwidth]{Images/terrainAnalysisExt2.png}}
             \caption{Comparison of close range and extended range terrain analysis}
+            \label{fig:terrain_analysis_comparison}
         \end{figure}
 
         This terrain analysis paradigm is derived from the works of Ji Shang et al. on fast likelihood-based collision avoidance \cite{zhang2020falco}, as is the local path planning that will be described in section \ref{section:local_path_planning}.
@@ -759,11 +785,13 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \end{figure}
 
         The point cloud is split into three zones. In the first zone, the one closest to the robot, the terrain analysis voxels don't get modified but can only get added. This is done to ensure that the robot doesn't forget obstacles when they get closer than the minimum distance the LIDAR can measure. This value was set to $0.1\,\text{m}$ for the quadruped for example.
-        The second zone is the zone within which a voxel that has not been hit by the LIDAR for a certain amount of time $s$ get removed. This ensures that the robot doesn't get by obstacles that have been removed from the point cloud, like in the case of a human passing by. The third and final zone is the zone within which we clear any terrain voxel present. This is done to ensure
+        The second zone is the zone within which a voxel that has not been hit by the LIDAR for a certain amount of time $s$ get removed. This ensures that the robot doesn't get stopped indefinitely by obstacles that have been removed from the point cloud, like in the case of a human passing by. The third and final zone is the zone within which we clear any terrain voxel present. This is done to ensure that the computation time and memory usage of the terrain analysis doesn't grow indefinitely. This value was set to $8\,\text{m}$ for the regular terrain analysis, and $30\,\text{m}$ for the extended terrain analysis for the quadruped.
+        
+        Currently, the two terrain analysis are done in parallel, executing the same calculations multiple times. An area of improvement would be to combine both to reduce the total computation time.
 
     \subsection{Planning}
 
-        The problem of path planning in 2D is a well known problem in robotics and has been solved many times. However, the problem of path planning in 3D is much more complex, anly recently have efficient solutions been found. 
+        The problem of path planning in 2D is a well known problem in robotics and has been solved many times. However, the problem of path planning in 3D is much more complex, and only recently have efficient solutions been found. 
 
         \subsubsection{2D path planning}
         % Using nav2 as a base and how we convert from a 3D point cloud to a 2D one 
@@ -771,9 +799,9 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
                 
         \begin{figure}[H]
             \centering
-            \label{fig:nav2_costmaps}
             \includegraphics[width=0.8\textwidth]{Images/nav2_costmaps_alpha.png}
             \caption{Nav2 creating multiple costmaps in a simulation, a gradient of colors can be seen around the walls}
+            \label{fig:nav2_costmaps}
         \end{figure}
         
         In Figure \ref{fig:nav2_costmaps}, the costmaps, used for navigation, generated by Nav2 can be seen. They represent areas that are free to navigate, areas that are occupied by obstacles, and areas that are unknown. In Figure \ref{fig:nav2_costmaps} they can be seen as purple and blue colored zones around walls and obstacles.  
@@ -797,16 +825,17 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         %TODO : add a figure of the local planner paths 
         \begin{figure}[H]
             \centering
-            \color{red}
-            ADD LOCAL PLANNER PATHS RVIZ2
-            \caption{Considered paths by the local planner}
+            \includegraphics[width=0.75\textwidth]{Images/free_paths.png}
+            \caption{Considered paths by the local planner in blue, with terrain analysis pointcloud, the robot is represented as a set of transformed axis}
+            \label{fig:local_planner_paths}
         \end{figure}
 
 
-        The local planner uses the terrain analysis mentioned in section \ref{section:terrain_analysis} to determine the navigable areas. It also subscribes to the odometry, referred to as "/state\_estimation" in the figure \ref{fig:local_planner}, and the registered scan. Its main goal is obtained from the topic "/way\_point" that is generated by the global planner. The local planner then publishes the best path to the topic "/path" that is used by the controller to move the robot, as well as all free paths considered on the topic "/free\_paths". As can be seen in figure \ref{fig:local_planner}, the local planner also makes sure to only consider paths that are within the exploration boundary if one is defined by subscribing to the topic "/exploration\_boundary".
+        The local planner uses the terrain analysis mentioned in section \ref{section:terrain_analysis} to determine the navigable areas. It also subscribes to the odometry, referred to as "/state\_estimation" in Figure \ref{fig:local_planner}, and the registered scan. Its main goal is obtained from the topic "/way\_point" that is generated by the global planner. The local planner then publishes the best path to the topic "/path" that is used by the controller to move the robot, as well as all free paths considered on the topic "/free\_paths". As can be seen in Figure \ref{fig:local_planner}, the local planner also makes sure to only consider paths that are within the exploration boundary if one is defined by subscribing to the topic "/exploration\_boundary". The free paths considered by the local planner can be seen in Figure \ref{fig:local_planner_paths}.
 
         Setting the correct margin of inflation for the obstacles and the min/max obstacle height for the real robot was a challenge. The margin needed to be large enough to not run into walls and obstacles, but small enough so that the planner would go through tight doorways and passages. 
 
+        To avoid collisions for the quadruped platform, the built-in collision avoidance was also turned on. This resulted in the robot stopping when either the local planner or the collision avoidance detected an obstacle. This was done to ensure the safety of the robot and the environment and proved very reliable in the tests that were done, avoiding collisions with static obstacles, but also with moving obstacles like humans.
         
         \begin{figure}[h]
             \centering
@@ -817,24 +846,49 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \label{fig:local_planner}
         \end{figure}
         
-        \begin{figure}[h!]
-            \centering
-            \includegraphics[width=0.65\textwidth]{Images/localPlannerSimCropped.png}
-            \caption{Local planner in simulation, the yellow points are the considered paths, the other points are from the terrain analysis. The robot is represented as a set of axis}
-            \label{fig:local_planner_sim}
-        \end{figure}
-        
+        % \begin{figure}[h!]
+        %     \centering
+        %     \includegraphics[width=0.65\textwidth]{Images/localPlannerSimCropped.png}
+        %     \caption{Local planner in simulation, the yellow points are the considered paths, the other points are from the terrain analysis. The robot is represented as a set of axis}
+        %     \label{fig:local_planner_sim}
+        % \end{figure}
+
         % TODO also add the path following node explaination
         
         
-        \subsubsection{Comparison of 3D planning algorithms}
+        \subsubsection{Comparison of 3D Planning Algorithms}
+
+        3D path planning algorithms can be divided in multiple categories, each tailored to specific world representation, with distinct strengths and limitations. Sampling-based algorithms, such as Rapidly-Exploring Random Trees \cite{lavalle1998rapidly} (RRT) and Probabilistic Roadmaps\cite{kavraki1996probabilistic} (PRM), are particularly effective in navigating complex environments. These algorithms are highly flexible and incrementally construct paths, making them suitable for real-time applications. However, they can suffer from inefficiencies caused by random sampling, which may result in suboptimal paths in real world scenarios. Advanced versions like RRT* \cite{islam2012rrt} enhance the optimality of the generated paths, while adaptive PRM methods reduce computational demands in dynamic environments.
+        
+        Node-based algorithms, including A* and its derivatives, are renowned for their proven optimality under specific conditions. These algorithms operate by exploring nodes in a predefined graph and are highly effective in dynamic environments. Variants such as Theta* improve upon A* by generating paths with realistic shapes better suited for real-world terrains. However, their reliance on dense grids for 3D environments can lead to significant computational overhead, especially in cluttered or expansive workspaces.
+        
+        Bioinspired algorithms, such as Ant Colony Optimization (ACO) and Particle Swarm Optimization (PSO), draw inspiration from natural phenomena to address complex, unstructured environments. These methods excel in solving NP-hard problems and can adapt well to challenging scenarios. Despite their robustness, they often require extensive computational resources and careful parameter tuning to achieve optimal results.
+        
+        Mathematical model-based algorithms provide rigorously defined solutions by incorporating kinodynamic constraints into their formulations. While these methods offer precise paths and control mechanisms, their dependence on accurate environmental models and high computational costs can limit their practicality in real-time applications.
+        
+        Finally, hybrid or multifusion algorithms combine elements from multiple approaches, such as integrating A* with RRT*, to leverage the complementary strengths of individual methods. These hybrid strategies excel in balancing adaptability and computational efficiency but may introduce additional complexity in their implementation and fine-tuning.
+        
+        The choice of algorithm depends largely on the specific requirements of the task, including computational efficiency, environmental adaptability, and the precision needed for the robotic application.
+        
 
         
 
     \subsection{Exploration}
+
+        In the field of robotics, exploration is the conception of trajectories that provide more coverage of the environment for the sensors. It is inherently linked to the mapping and path planning processes, as exploration requires the robot to know where it is and where it can go.  
+        
         \subsubsection{Metrics for exploration}
         % show how we calculate the exploration rate using the tools provided in the TARE planner
         % explain the need for a pre-recorded pointcloud of the area we wish to explore
+        
+        Exploration efficiency can be quantified by the exploration rate, which measures the amount of new information gathered by a robot over a period of time. This metric can be defined as either the surface area or volume of the environment covered by the aggregation of all sensor readings over time. The exploration rate is crucial for optimizing the efficiency of robotic exploration missions, as it directly impacts the speed and thus the time required to fully map an environment. 
+
+        Another metric that is important for robotics exploration is the final area or volume covered by the robot. This demonstrates how thorough the exploration was, and can be used to compare different exploration strategies.
+
+        Finally, as the exploration algorithm is executed on an embedded computer, the computational cost of the algorithm is also an important metric to consider. 
+
+        The problem of exploration remains a challenging and open one, as described in \cite{lluvia2021active}. But advancements in reinforcement learning approaches to the problem \cite{garaffa2021reinforcement} have helped improve the efficiency in certain scenarios but still lack the robustness of traditional methods.
+
         \subsubsection{TARE planner}
         % go in details about the process that the TARE-planner uses to explore and the motivations for the original creation of this planner (darpa sub teranean chaleneg)
 
@@ -848,16 +902,37 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \begin{figure}[H]
             \centering
             \includegraphics[width=0.7\textwidth]{Images/tare_darpa_exploration.jpg}
-            \caption{TARE planner exploration during DARPA SubT challenge}
+            \caption{TARE planner exploration during DARPA SubT challenge, from \cite{tare}}
             \label{fig:tare_darpa_exploration}
         \end{figure}
 
         \begin{figure}[H]
             \centering
             \includegraphics[width=0.7\textwidth]{Images/tare.pdf}
-            \caption{Local and global paths of the TARE planner, a dense map is conserved only for the local planning horizon, while a sparse map is kept for the global planning}
+            \caption{Local and global paths of the TARE planner, a dense map is conserved only for the local planning horizon, while a sparse map is kept for the global planning, from \cite{tare}}
             \label{fig:tare_local_global}
         \end{figure}
+
+
+        A test was performed with the TARE planner in a real environment to showcase the exploration capabilities of the planner. The environment chosen is the ground floor of the Alumni Hall at IIT that features a concrete testing lab, a machine shop, a classroom, and two entryways. In Figure \ref{fig:tare_iit_exploration}, the exploration of the Alumni Hall can be seen. The planner was able to explore most of the environment in a less than 10 minutes. It however struggled to go through tight passages, like certain doorways, but did not require any manual interventions. The resulting map captured by the LIDAR of the GO2 can be seen in Figure \ref{fig:tare_iit_map}.
+
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.7\textwidth]{Images/GO2_exploring_alumni.png}
+            \caption{Unitree GO2 during a test exploration of the Alumni Hall at IIT}
+            \label{fig:tare_iit_exploration}
+        \end{figure}
+
+        
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.95\textwidth]{Images/map_explore_alumni_no_bg.png}
+            \caption{Top-down view of the point cloud captured by the GO2 during the exploration of the Alumni Hall at IIT, the grid has a cell size of 1m, the red arrows represent the odometry of the robot at various times}
+            \label{fig:tare_iit_map}
+        \end{figure}
+
 
         % TODO : explain the viewpoint selection with a figure 
 
@@ -885,8 +960,8 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         As such, the MUI-TARE planner was not integrated into the robots but remains a good candidate for the future. Additionally, the planner is proven to work in simulation, and has been tested during the DARPA SubT challenge, showcasing its robustness and efficiency. We believe this planner could thus be used in future exploration scenarios with the platforms already built, or with new platforms, by simply adding the necessary communication hardware and software. 
 
-
-        \subsubsection{Comparison of exploration algorithms}
+        %! This should be done but the work is too much for the time left
+        %\subsubsection{Comparison of exploration algorithms}
         % metion the other exploration planners that are mentioned in the literature and how they compare to TARE and MTARE
 
 
@@ -906,7 +981,13 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
             I was also able to find a working simulation of the Livox Mid-360 LIDAR sensor we chose for every platform. The package \cite{livox_lidar_simulation_fork} was a fork of the original simulation package from Livox \cite{livox_laser_simulation} and was modified to work with the specific LIDAR we are using.
             
-            
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.7\textwidth]{Images/gazebo_interface.png}
+                \caption{Gazebo classic interface, simulation environment in the center, toolbar on top, and the world tree on the left}
+                \label{fig:gazebo_simulation}
+            \end{figure}
+
 
         \subsubsection{Nvidia Isaac Sim}
 
@@ -937,6 +1018,20 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
                 \caption{Quadruped platform reinforcement learning training in Isaac Sim}
                 \label{fig:isaac_sim_quadruped}
             \end{figure}
+
+        \subsubsection{Simulation using game engines}
+
+            Other researchers have used game engines like Unity or Unreal Engine for simulation. These engines offer high graphical fidelity while maintaining a high level of performance. One example is the GO2 and Diablo simulations that researchers at Carnegie Mellon University have done in Unity as can be seen in Figure \ref{fig:unity_simulation}. This simulation uses \texttt{ros\_tcp\_endpoint}, a ROS package that allows for communication between ROS and Unity. The Unity simulation requires the \texttt{ros\_tcp\_connector} unity package, this establishes a connection between the ROS2 node and the Unity simulation.
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.75\textwidth]{Images/Unity_simulation.png}
+                \caption{Simulations of the GO2 and Diablo platforms in Unity on the right, with the data generated and tare planner running visualized in RVIZ2 on the left}
+                \label{fig:unity_simulation}
+            \end{figure}
+
+            The main advantage of using a game engine for such simulation is the high fidelity that can be achieved, which is sometimes necessary for tasks such as machine vision or reinforcement learning. However, the complexity of the setup and the need to implement every sensor and actuator can be a drawback. Additionally, the physics engines used in game engines are optimized for games and not for accuracy, which can be a problem for some applications.
+
+            The long and complex setup of the Unity simulation is the reason why I did not choose this method for the simulation of the platforms.
 
     \subsection{Simulating sensors}
 
@@ -981,7 +1076,6 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
     <topicName>imu</topicName>
     <bodyName>imu</bodyName>
     <updateRateHZ>100.0</updateRateHZ>
-    <gaussianNoise>0.0</gaussianNoise>
     <xyzOffset>0 0 0</xyzOffset>
     <rpyOffset>0 0 0</rpyOffset>
     <frameName>imu</frameName>
