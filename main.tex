@@ -189,12 +189,31 @@
     columns=flexible
 }
 
+% style for xml files
+\lstdefinestyle{xml}{
+    language=XML,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!40!black},
+    captionpos=b,
+    stringstyle=\color{red},
+    identifierstyle=\color{black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    columns=flexible
+}
+
 
 \bibliographystyle{plain} % We choose the "plain" reference style
 
 \renewcommand{\epsilon}{\varepsilon} 
 \renewcommand{\phi}{\varphi} 
 \title{Final Year Project Report\vspace{10pt}\\
+PFE-Master\vspace{10pt}\\
 **************************************************\\
 Multi Agent Scene Exploration and Mapping \\
 for Continuous Digital Twin Creation\vspace{10pt}\\
@@ -203,7 +222,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
 \begin{document}
 \emergencystretch 3em
-\date{2024}
+\date{3 June 2024 - 3 December 2024}
 \maketitle
 \thispagestyle{empty}
 
@@ -238,7 +257,8 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 \newpage
 \section*{Acknowledgments}
 
-    Acknowledgments.
+    I would like to thank Dr Mutis for his support and his trust during this internship. I would also like to thank for their help and support, the PhD students of the lab : Pedro, Nishant, Marina and Xuanchang. As well as the master students present at the lab for their support and the discussion we had : Manoj and Smit. I would also like to thank Erwan, a French student doing an internship at the lab, for visiting and discovering Chicago with me.
+
     
 \newpage
 \thispagestyle{empty}
@@ -250,26 +270,25 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 \newpage
 \thispagestyle{empty}
 \mbox{}
-\newpage
 
 \section{Introduction}
 
-    The internship took place at the Illinois Institute Technology (IIT) in Chicago, the largest city of the state of the state of Illinois and the Midwest of the United States.
+    The internship took place at the Illinois Institute Technology (IIT) in Chicago, the largest city of the state of Illinois and the Midwest of the United States.
 
     \subsection{Presentation of IIT}
 
-    The Illinois Institute of Technology (IIT) is a private research university in Chicago, Illinois. It was established in 1940 by the merger of the Armour Institute and Lewis Institute. The university has programs in computer science, architectural and building sciences, mechanical engineering, information technologies, bioenginnering and biomedical engineering, civil engineering, aerospace, aeronautical and astraunotical engineering, chemical engineering, electrical and electronics engineering, and more.
+    The Illinois Institute of Technology (IIT) is a private research university in Chicago, Illinois. It was established in 1940 by the merger of the Armour Institute and Lewis Institute. The university has programs in computer science, architectural and building sciences, mechanical engineering, information technologies, bioengineering and biomedical engineering, civil engineering, aerospace, aeronautical and astronautical engineering, chemical engineering, electrical and electronics engineering, and more.
 
 
     \subsection{Presentation of the lab}
 
-    I was part of the iConSenSe Lab, a lab that focuses on advanced computing, informatics, sensing, and semantics technologies for civil and construction engineering. The lab currently focuses mainly on how virtual and mixed reality can enhance the construction industry, through VR based training. As construction Environments can be dangerous, a VR based training for safety rules and procedures can be very useful, as dangerous scenarios can be simulated safely.
-    But the lab also explores technologies that could improve the construction quality and speed. Specifically, robotics could improve repetitive tasks on construction sites like picking up trash, or moving materials.
+    I was part of the iConSenSe Lab, a lab that focuses on advanced computing, informatics, sensing, and semantics technologies for civil and construction engineering. The lab currently focuses mainly on how virtual and mixed reality can enhance the construction industry, through VR-based training. As construction environments can be dangerous, VR-based training for safety rules and procedures can be very useful, as dangerous scenarios can be simulated safely.
+    But the lab also explores technologies that could improve the construction quality and speed. Specifically, robotics could improve repetitive tasks on construction sites like picking up trash, surveying, or moving materials.
 
 
     \subsection{Context and goal of the project}   
     
-    The problem we wish to tackle during this internship is the creation of point clouds for quality assurance purposes and progress tracking during construction. This is currently done with stationary 3D scanners that sit on tripods that need to be moved multiple times to cover the whole site. As this scanning process takes a long time to perform, they can not be performed regularly, and they require an operator to be present.
+    The problem we wish to tackle during this internship is the creation of point clouds for quality assurance purposes and progress tracking during construction. This is currently done with stationary 3D scanners on tripods that need to be moved multiple times to cover the whole site. As this scanning process takes a long time to perform, it can not be performed regularly, and it requires an operator to be present.
    
     We propose a system where multiple robotics agents can explore the construction site autonomously, performing the task daily or while construction is happening. Each agent carries a LIDAR sensor and fuses the data with the other agents in real time. This would allow a continuous digital twin to be made from the captured point cloud data and compared to the building information modeling (BIM) data. This could allow for fine grain inventory tracking of equipment, raw materials in the form of bags, pallets boxes, or piles of aggregate.
    
@@ -280,16 +299,16 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 \section[Setting up the physical agents]{Setting up the physical agents}
 \label{section:big title}%label to reference section
 
-        The goal of this project was to have three different kinds of platforms, to showcase the versatility of the algorithms considered. We chose to focus on a wheeled platform, a quadruped robot, and a quadcopter. Each platform could show its strengths and weakness in certain situations, while the algorithms would remain largely similar between the platforms. This section explains how the various agents were set up in terms of the hardware modifications, the sensors being fitted, and the software setup.
+        The goal of this project was to have three different kinds of platforms, to showcase the versatility of the algorithms considered. We chose to focus on a wheeled platform, a quadruped robot, and a quadcopter. Each platform could show its strengths and weaknesses in certain situations, while the algorithms would remain largely similar between the platforms. This section explains how the various agents were set up in terms of the hardware modifications, the sensors being fitted, and the software setup.
 
         %Three platforms were used in this project: a six-wheeled platform, a quadcopter, and a quadruped platform. Each platform was chosen for its specific characteristics, with the goal of having a multi-agent system that could explore and map a scene. The wheeled platform was chosen for its stability and ability to carry heavy loads. The quadcopter was chosen for its ability to fly and provide a bird's-eye view of the scene. The quadruped platform was chosen for its ability to climb stairs and navigate bumpy terrain.
 
     \subsection{Wheeled platform setup}
 
-        The wheeled platform was chosen for its stability on flat terrain and with other projects in mind, its ability to carry heavy loads. The intent was to have a robotic arm mounted for other projects. Some previous work had already been done on the platform, but the person was apparently unsuccessful. These earlier attempts had left the platform in a partially modified state, requiring a comprehensive reassessment and redesign of both the mechanical and electrical systems. Despite these setbacks, the robust chassis of the six-wheeled platform still presented an excellent foundation for our project, offering the potential for further development.
+        The wheeled platform was chosen for its simplicity, its stability on flat terrain and, with other projects in mind, its ability to carry heavy loads. The intent was to have a robotic arm mounted for other projects. Some previous work had already been done on the platform, but the person was apparently unsuccessful. These earlier attempts had left the platform in a partially modified state, requiring a comprehensive reassessment and redesign of both the mechanical and electrical systems. Despite these setbacks, the robust chassis of the six-wheeled platform still presented an excellent foundation for our project, offering the potential for further development.
 
         \subsubsection{Mechanical modifications}
-        As it arrived, the six-wheeled platform only consisted of a stainless steel chassis, six DC motors, and wheels, as can be seen in Figure \ref{fig:wheeled_latform}. The platform required several mechanical modifications to accommodate the necessary components for autonomous operation. Specifically, it needed a mount for a LIDAR sensor and an embedded computer on its top surface (see Figure \ref{fig:motor_driver_mount}). The inside was reserved for the motors, battery, and power circuitry. Additionally, a mounting solution for the motor drivers inside the chassis was essential (see Figure \ref{fig:motor_driver_mount}), as the previous version didn't secure them in place and had several drivers stop functioning. These modifications were designed and implemented to ensure proper integration of all components while maintaining the structural integrity of the platform, the integration of the LIDAR and the embedded computer can be seen in Figure \ref{fig:full_cad_model}.
+        As it arrived, the six-wheeled platform only consisted of a stainless steel chassis, six DC motors, and wheels, as can be seen in Figure \ref{fig:wheeled_latform}. The platform required several mechanical modifications to accommodate the necessary components for autonomous operation. Specifically, it needed a mount for a LIDAR sensor and an embedded computer on its top surface (see Figure \ref{fig:motor_driver_mount}). We decided that the inside was reserved for the motors, battery, and power circuitry. Additionally, a mounting solution for the motor drivers inside the chassis was essential (see Figure \ref{fig:motor_driver_mount}), as the previous version didn't secure them in place and had several drivers stop functioning. These modifications were designed and implemented to ensure proper integration of all components while maintaining the structural integrity of the platform, the integration of the LIDAR and the embedded computer can be seen in Figure \ref{fig:full_cad_model}.
         
         \begin{figure}[H]
             \centering
@@ -307,7 +326,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \label{fig:motor_driver_mount}
         \end{figure}
         
-        To further accelerate development of the construction of the robots, a 3D printer was purchased and set up by myself. We chose the Bambu Lab P1P 3D printer for its large enclosed build volume, which would allow us to print engineering materials such as ABS, Nylon, or carbon fiber filed materials. It required a nozzle to be changed to hardened steel to be able to handle fiber filled filaments, which I performed and tested by printing protection cages for the LIDARs. The printer was set up in the lab and was used to print the parts needed for the mechanical modifications of the platforms. It was also used to print parts for other projects in the lab, such as storage for VR headsets, and all kinds of brackets.
+        To further accelerate development of the construction of the robots, a 3D printer was purchased and I was responsible for setting it up. We chose the Bambu Lab P1P 3D printer for its large enclosed build volume, which would allow us to print engineering materials such as ABS, Nylon, or carbon fiber filed materials. It required a nozzle to be changed to hardened steel to be able to handle fiber filled filaments, which I performed and tested by printing protection cages for the LIDARs. The printer was set up in the lab and was used to print the parts needed for the mechanical modifications of the platforms. It was also used to print parts for other projects in the lab, such as storage for VR headsets, and all kinds of brackets.
 
         \begin{figure}[H]
             \centering
@@ -319,7 +338,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \subsubsection{Electronics architecture}
             The essential electronic components needed to get the platform running were mainly DC motor drivers to drive the motors, a LIDAR sensor and an embedded computer.
             
-            Difficulties were encountered when trying to use the drivers someone else tried beforehand as they were under powered : at stall, the motors required around 5 amps of current, as measured with a bench top power supply, and the drivers I was trying to use were only capable of delivering 2 amps per channel or a total of 4 amps when combining outputs. The drivers in question were the based on the LN298N which were in terms replaced by the 7A dual motor drivers from DFRobot. A physical comparison can be seen in Figure \ref{fig:drivers_comparison}.
+            Difficulties were encountered when trying to use the drivers someone else tried beforehand as they were under powered : at stall, the motors required around 5 amps of current, as measured with a bench top power supply, and the drivers I was trying to use were only capable of delivering 2 amps per channel or a total of 4 amps when combining outputs. The drivers in question were based on the LN298N which were in terms replaced by the 7A dual motor drivers from DFRobot. A physical comparison can be seen in Figure \ref{fig:drivers_comparison}.
         
             
             \begin{figure}[h]
@@ -332,7 +351,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \end{figure}
 
             The three motor drivers were connected to a microcontroller through custom made cables, as the cables previously used were undersized for the current of the motors. The connection can be seen in Figure \ref{fig:driver_to_pico}, as well as the connection from the microcontroller to the radio receiver.
-            I chose to use a Raspberry Pi Pico microcontroller for its many outputs, totaling 22 general purpose input outputs (GPIO). Each driver required 6 control signals or 3 per motor: two signals are used to control the direction of the motor according to Table \ref{tab:motor_control}, while the third signal's duty cycle determines the speed.
+            I chose to use a Raspberry Pi Pico microcontroller for its numerous outputs, totaling 22 general purpose input outputs (GPIO). Each driver required 6 control signals or 3 per motor: two signals are used to control the direction of the motor according to Table \ref{tab:motor_control}, while the third signal's duty cycle determines the speed.
 
             A radio control (RC) receiver was also connected to interrupt capable GPIOs of the microcontroller to be able to control the platform manually. We use interrupts for those signals as to measure the pulse duration accurately and thus infer the control signal sent via radio. Three channels of the RC receiver were used to control the speed, the direction and the mode of the platform. The mode refers to whether or not the platform is in manual control or in autonomous mode and is connected to channel 5 of the radio which has a two-way switch.
 
@@ -388,7 +407,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         The robot operating system (ROS) was chosen as the software framework for the platform running on the Jetson Orin embedded computer. Specifically, ROS2 Humble Hawksbill was selected due to its extensive package availability and compatibility with the Jetson Orin's hardware. Indeed, I was made aware of the struggles of another researcher running a ROS based robot on an Nvidia Jetson Nano and how Ubuntu, and ROS version mismatch may bring problems. 
         
-        This version of ROS2 provides a robust and flexible framework for developing and integrating various components of the platform, including sensor processing, navigation, and control. For real-time critical tasks such as motor control and RC radio interrupts, the Raspberry Pi Pico microcontroller was utilized, leveraging its ability to handle low-level, time-sensitive operations. The microcontroller's firmware was developed from the ground up by myself, guaranteeing reliable execution of motor control and interrupt handling tasks. By combining the strengths of ROS2 on the Jetson Orin with the real-time capabilities of the Raspberry Pi Pico, the platform achieves a robust and efficient software architecture that enables seamless integration of autonomous navigation, sensor processing, and manual control. This software architecture is illustrated in Figure \ref{fig:SW_architecture}.
+        This version of ROS2 provides a robust and flexible framework for developing and integrating various components of the platform, including sensor processing, navigation, and control. For real-time critical tasks such as motor control and RC radio interrupts, the Raspberry Pi Pico microcontroller was utilized, leveraging its ability to handle low-level, time-sensitive operations. The microcontroller's firmware was developed from the ground up by myself, guaranteeing reliable execution of motor control and interrupt handling tasks. By combining the strengths of ROS2 on the Jetson Orin with the real-time capabilities of the Raspberry Pi Pico, the platform now features a robust and efficient software architecture that enables seamless integration of autonomous navigation, sensor processing, and manual control. This software architecture is illustrated in Figure \ref{fig:SW_architecture}.
 
         \begin{figure}[H]
             \centering
@@ -401,11 +420,11 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         \subsubsection{ROS 2 setup}
         
-        As the distribution of Linux that we use on the Jetson is derived from Ubuntu 22.04, ROS2 can be installed using the Debian packages provided by the ROS2 foundation. The installation process is straightforward \cite{ros2_installation} and is well documented on the ROS2 website. ROS2 packages are often built for multiple architecture include x86, and ARM32. The Jetson Orin being an ARM64 architecture, the packages are directly compatible with it. 
+        As the distribution of Linux that we use on the Jetson is derived from Ubuntu 22.04, ROS2 can be installed using the Debian packages provided by the ROS2 foundation. The installation process is straightforward \cite{ros2_installation} and is well documented on the ROS2 website. ROS2 packages are often built for multiple architecture include x86, and ARM64. The Jetson Orin being an ARM64 architecture, the packages are directly compatible with it. 
 
-        The specific distribution of Linux that we decided to install is Jetson Linux 36.4, also called Jetpack 6.1. This distribution is based on Ubuntu 22.04 and the Linux kernel 5.15. The main advantage of using this Linux distribution over any other is the included Nvidia drivers, and the included libraries like CUDA\cite{cuda}, TensorRT \cite{tensorrt}, cuDNN\cite{cudnn}, VPI and many others. These libraries are essential for the use of the Jetson Orin as a computer vision and machine learning platform. The inference capabilities were not explored during this internship, but the embedded computer could be used for future sim to real \cite{peng2018sim} experiments. 
+        The specific distribution of Linux that we decided to install is Jetson Linux 36.4, also called Jetpack 6.1. This distribution is based on Ubuntu 22.04 and the Linux kernel 5.15. The main advantage of using this Linux distribution over any other is the included Nvidia drivers, and the included libraries like CUDA\cite{cuda}, TensorRT \cite{tensorrt}, cuDNN\cite{cudnn}, VPI, and many others. These libraries are essential for the use of the Jetson Orin as a computer vision and machine learning platform. The inference capabilities were not explored during this internship, but the embedded computer could be used for future sim to real \cite{peng2018sim} experiments. 
 
-        In ROS2 a controller was created for handling the differential control of the robot. This packaged followed the interfaces provided by ros2\_control, allowing the seamless control of the robot both in simulation and in real life. The package I created for this is called \texttt{skid\_drive\_controller} and is largely inspired by the differential controller provided by the ros2\_control package.
+        In ROS2 a controller was created for handling the differential control of the robot. This package followed the interfaces provided by ros2\_control, allowing the seamless control of the robot both in simulation and in real life. The package I created for this is called \texttt{skid\_drive\_controller} and is largely inspired by the differential controller provided by the ros2\_control package.
         
         \noindent
         \begin{minipage}{0.45\textwidth}
@@ -440,7 +459,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \label{fig:rover_comparison}
         \end{figure}
 
-        The new chassis is entirely 3D printed, making it fit exactly to our needs as can be seen by the CAD model in Figure \ref{fig:crawlerv2_cad}. This make the overall platform more compact and lighter. The LIDAR was also placed in the front at an angle to more easily cover the ground, which is needed for the terrain analysis that will be described in section \ref{section:terrain_analysis}. The new platform is now four wheeled, but was designed with modularity in mind to be able to add two additional wheels and motors in the center of the chassis.
+        The new chassis is entirely 3D printed, making it fit exactly to our needs as can be seen by the CAD model in Figure \ref{fig:crawlerv2_cad}. This makes the overall platform more compact and lighter. The LIDAR was also placed in the front at an angle to more easily cover the ground, which is needed for the terrain analysis that will be described in section \ref{section:terrain_analysis}. The new platform is now four wheeled, but was designed with modularity in mind to be able to add two additional wheels and motors in the center of the chassis.
 
 
         \begin{figure}[H]
@@ -456,7 +475,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             % Explain the platform's starting point and the goal
             % Explain the different drones that were at my disposal and which one was selected for our application (the one that could easel;y carry the LIDAR, jetson while not being too big)
 
-            One of the agents in our multi-agent system is a quadcopter, chosen for its ability to provide aerial perspective and navigate in three-dimensional space. After evaluating several drone options available to us, we selected a model that struck an optimal balance between payload capacity and size. This drone was capable of easily carrying the Livox Mid-360 LIDAR sensor and the Nvidia Jetson Orin embedded computer, while still maintaining a compact form factor suitable for indoor and outdoor operations.
+            One of the agents in our multi-agent system is a quadcopter, chosen for its ability to provide aerial perspective and navigate in three-dimensional space. After evaluating several drone options available to us in the lab, we selected a model that struck an optimal balance between payload capacity and size. This drone was capable of easily carrying the Livox Mid-360 LIDAR sensor and the Nvidia Jetson Orin embedded computer, while still maintaining a compact form factor suitable for indoor and outdoor operations.
 
             The quadcopter platform required several modifications to integrate our specific sensor suite and computational hardware.
 
@@ -485,7 +504,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
                 % don't know what planner to use, something complicated or just a grid coverage planner
                 Time didn't allow for the implementation of a full navigation stack on the drone. As such, only a theoretical architecture, similar to the previous platform, was planned.
                 
-                The goal was to use a modified version of TARE planner for aerial navigation that would consider paths in 3D for the local planner, as demonstrated by the Carnegie Mellon University \cite{cao2023representation}. The embedded computer would then send the command orders to the flight computer, a Cube Orange+, via MavLINK one one of the flight computer's USB port.
+                The goal was to use a modified version of TARE planner, a planner that will be described in \ref{section:tare_planner}, for aerial navigation that would consider paths in 3D for the local planner, as demonstrated by the Carnegie Mellon University \cite{cao2023representation}. The embedded computer would then send the command orders to the flight computer, a Cube Orange+, via MavLINK via one of the flight computer's USB port.
 
                 For safety reasons, an operator with a radio controller would have been required for testing, as it is required by law to have the capability to have manual control at all time and to have the drone in view. 
 
@@ -497,7 +516,14 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             
     \subsection{Quadruped platform setup}
 
-        A quadruped was chosen as the third platform as it can navigate rough terrain and climb stairs. The platform chosen was the Unitree GO2, a quadruped robot with a 3D LIDAR and an embedded computer.
+        A quadruped was chosen as the third platform as it can navigate rough terrain and climb stairs. The platform chosen was the Unitree GO2, a quadruped robot with a 3D LIDAR and an embedded computer. The quadruped robot we chose can be seen in Figure \ref{fig:go2}.
+        
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.5\textwidth]{Images/go2.png}
+            \caption{Unitree GO2 quadruped robot}
+            \label{fig:go2}
+        \end{figure}
 
         \subsubsection{Compute backpack}
 
@@ -508,13 +534,13 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \begin{figure}[H]
             \centering
             \begin{minipage}{0.45\textwidth}
-                The compute backpack also provides access to a power port through an Amass XT-30connector and a gigabit Ethernet port on the robot that are usually covered by a plastic cover. Those ports are covered by the handle of the GO2, but a replacement plate with holes was designed as can be seen in Figure \ref{fig:handle_cover}.
+                The compute backpack also provides access to a power port through an Amass XT-30 connector and a gigabit Ethernet port on the robot that are usually covered by a plastic cover. Those ports are covered by the handle of the GO2, but a replacement plate with holes was designed as can be seen in Figure \ref{fig:handle_cover}.
             \end{minipage}%
             \hfill
             \begin{minipage}{0.5\textwidth}
                 \centering
                 \includegraphics[width=0.75\textwidth]{Images/PortsWithCover.jpg}
-                \caption{Handle and covered connectors}
+                \caption{New cover for connector access with handle removed}
                 \label{fig:handle_cover}
             \end{minipage}
         \end{figure}
@@ -528,7 +554,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \label{fig:scanner_and_cad}
         \end{figure}
 
-        The compute backpack's shell was 3D printed in PETG, as it is less brittle than many other filaments like PLA or ABS. This was done so that the shell be able to withstand potential falls of the robot. The compute backpack with the Jetson Orin, the Mid-360 LIDAR, the power regulators and the cabling can be seen in Figure \ref{fig:compute_backpack}. For development purposes, a video transmitter is also fitted to provide an easy way to see the Jetson's desktop without having to connect a monitor to it. As this is powered by USB, it doesn't require any additional power source.
+        The compute backpack's shell was 3D printed in PETG, as it is less brittle than many other plastics like PLA or ABS. This was done so that the shell be able to withstand potential falls of the robot. The compute backpack with the Jetson Orin, the Mid-360 LIDAR, the power regulators and the cabling can be seen in Figure \ref{fig:compute_backpack} mounted on the robot. For development purposes, a video transmitter is also fitted to provide an easy way to see the Jetson's desktop without having to connect a monitor to it. As this is powered by USB, it doesn't require any additional power source.
 
         \begin{figure}[H]
             \centering
@@ -541,7 +567,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         
         \subsubsection{Communication with the quadruped}
 
-        To send command to the quadruped, Unitree offers a controller, a phone app, an SBUS port, a UWB remote, and an upgraded version of the robot that support CycloneDDS communication via Ethernet.
+        To send command to the quadruped, Unitree offers a controller, a phone app, n SBUS port, a UWB remote, and an upgraded version of the robot that support CycloneDDS communication via Ethernet.
 
         The controller uses both Bluetooth and a longer range 2.4GHz radio to communicate with the robot. This controller is only capable of sending movement commands, predefined non-modifiable actions, and initiate calibration. The Bluetooth seems to be used for initialization but is not required at longer ranges and all control commands are sent via the 2.4GHz radio.
 
@@ -552,6 +578,8 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         The UWB, or Ultra Wide Band, remote is an optional feature of the robot that provides the capability of person following to the robot. This remote also features a small joystick for manual control and uses the same technologies as the main controller. The UWB uses multiple antennas in the robot to estimate the position of the tracker that a person carries, giving a rough estimation of the position of the remote which the robot can then follow. However, this is not something that will help us in the control of the robot.
 
         Finally, the robot also features an Ethernet port, connected to the internal computer, as can be seen in Figure \ref{fig:handle_cover}, and as will be discussed in section \ref{section:go2_battery} this can provide a Data Distribution Service (DDS) using the CycloneDDS protocol. This protocol was developed by Eclipse and is an implementation of the Object Management Group (OMG) DDS. This protocol is used in many industrial applications and is known for its low latency and high reliability. CycloneDDS is one of the ROS MiddleWares (RMW) that can be used, and it is often praised for it's low latency and low CPU and memory usage. This way of communicating also offers the most control from very low level commands of each joint and raw LIDAR data, up to high level commands like predefined gaits and actions defined by Unitree. This is the communication method that we will use for the final implementation of the project.
+
+        All communication methods can be seen in Figure \ref{fig:go2_communication}.
     
 
         \begin{figure}[H]
@@ -622,11 +650,11 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         One of the other issues encountered happened after a software update of the robot. We weren't able to connect via SSH to the Linux computer inside the robot. This required many days of reverse engineering of the new firmware with the help of other people online.
 
-        The update had removed a vulnerable update mechanism that previously allowed us to gain a root shell to the robot. With that shell, we were then able to change the password of the robot and gain access to the robot via SSH. The new firmware had also prevented us from using the Ethernet port of the robot to communicate to the robot using the CycloneDDS which is one of the Data Distribution Services that ROS can use. This functionality of the robot is usually reserved for the educational version of the GO2, but the company doesn't offer any upgrade from the standard version to the educational version.
+        The update had removed a vulnerable update mechanism that previously allowed us to gain a root shell to the robot. With that shell, we were then able to change the password of the robot and gain access to the robot via SSH. The new firmware had also prevented us from using the Ethernet port of the robot to communicate to the robot using CycloneDDS. This functionality of the robot is usually reserved for the educational version of the GO2, but the company doesn't offer any upgrade from the standard version to the educational version.
 
         As such, I helped the open source community to design a new unlocking method. For reference, in the previous version, only a version number in a single file needed to be changed from a 2 to a 4 to unlock every functionality of the robot. The new update brought many new challenges as every binary was now heavily obfuscated and had increased in size by a factor of 10, every file's checksum was now verified by a yet unknown program, no debugger could be attached as every binary checked their parent process, and many other obfuscation techniques were used.
 
-        The anti debugger technique was quickly bypassed as only the name of the parent process was checked against a list of names, \texttt{gdb-server} not being part of this list made it easy to debug the binaries. Every binary also checked for the presence of a \texttt{tracepid} value, which was solved at first with kernel module that hides the presence of the \texttt{tracepid} value. Other threads were also created to continue monitoring those values in the binaries, but patching the \texttt{pthread\_create} instructions to \texttt{MOV X0, \#0} solved that problem.
+        The anti debugger technique was quickly bypassed as only the name of the parent process was checked against a list of names, \texttt{gdb-server} not being part of this list made it easy to debug the binaries. Every binary also checked for the presence of a \texttt{tracepid} value, which was solved at first with a kernel module that hides the presence of the \texttt{tracepid} value. Other threads were also created to continue monitoring those values in the binaries, but patching the \texttt{pthread\_create} instructions to \texttt{MOV X0, \#0} solved that problem.
 
         Once the location of the checksum check was identified in a binary, the instruction responsible for the comparison was patched to always return true : the previous instruction \texttt{BL <compare>} was replaced by \texttt{MOV X0, \#0}.
 
@@ -682,18 +710,18 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         
         As the Livox Mid-360 also carries an IMU, this is the reason why I turned myself to those kinds of algorithms for the odometry. 
         
-        One such algorithm is FAST-LIO2 \cite{xu2022fast}, which I chose for being close to the state of the art and having a version available that was compatible with the Mid-360 LIDAR. A more detailed comparison of the different LIDAR inertial odometry algorithms will be presented in the section \ref{section:etatArt}. The steps this algorithm takes are shown in Figure \ref{fig:fastlio2}, taken from the paper. As an implementation of the algorithm was available, I did not have spend enough time to understand every step of it, but a state of the art of LIDAR inertial odometry algorithms will be presented in the next section to understand what were the improvements of FAST-LIO2 over previous works.
+        One such algorithm is FAST-LIO2 \cite{xu2022fast}, which I chose for being close to the state of the art and having a version available that was compatible with the Mid-360 LIDAR. A more detailed comparison of the different LIDAR inertial odometry algorithms will be presented in section \ref{section:etatArt}. The steps this algorithm takes are shown in Figure \ref{fig:fastlio2}, taken from the paper. As an implementation of the algorithm was available, I did not have enough time to understand every step of it, but a state of the art in LIDAR inertial odometry algorithms will be presented in the next section to understand what were the improvements of FAST-LIO2 over previous works.
         
         \begin{figure}[h]
             \centering
             \includegraphics[width=0.95\textwidth]{Images/overview_fastlio2.png}
-            \caption{FAST-LIO2 algorithm description taken from \cite{xu2022fast}}
+            \caption{FAST-LIO2 algorithm description, from \cite{xu2022fast}}
             \label{fig:fastlio2}
         \end{figure}
         
         \subsubsection{Comparison of LIDAR inertial odometry algorithms}
 
-        I chose to compare LIDAR inertial odometry algorithms as it is the sensor readings available to us. LIDAR inertial odometry algorithms can be divided in two categories based on how the LIDAR and IMU data are fused : loosely coupled and tightly coupled.
+        I chose to compare LIDAR inertial odometry algorithms as it is an odometry method that utilizes the sensor readings available to us. LIDAR inertial odometry algorithms can be divided in two categories based on how the LIDAR and IMU data are fused : loosely coupled and tightly coupled.
 
         Loosely coupled methods estimate the state of each sensor independently, combines the measurement with weights, and then determines the position of the robot. Those methods are useful when both sensors are independent and changes to them want to be tested. The weights can also be changed depending on the sensors used and on their accuracy and noise, or dynamically if a sensor fails or malfunctions. However, we have a LIDAR package that integrates an IMU, making the aforementioned benefits not relevant to us.
 
@@ -742,7 +770,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         % TODO explain the algo used
         
-        % TODO add a comparaison of the two obtained opontclouds
+        % TODO add a comparaison of the two obtained point clouds
         \begin{figure}[H]
             \centering
             \subfigure[Close range terrain analysis]{\includegraphics[width=0.45\textwidth]{Images/terrainAnalysis.png}}
@@ -753,7 +781,6 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         This terrain analysis paradigm is derived from the works of Ji Shang et al. on fast likelihood-based collision avoidance \cite{zhang2020falco}, as is the local path planning that will be described in section \ref{section:local_path_planning}.
 
-        % TODO add refewrence to this figure
         \begin{figure}[H]
             \centering
             \begin{tikzpicture}[scale=1,font=\small]
@@ -784,10 +811,14 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \label{fig:decay}
         \end{figure}
 
-        The point cloud is split into three zones. In the first zone, the one closest to the robot, the terrain analysis voxels don't get modified but can only get added. This is done to ensure that the robot doesn't forget obstacles when they get closer than the minimum distance the LIDAR can measure. This value was set to $0.1\,\text{m}$ for the quadruped for example.
+        The point cloud is split into three zones, shown in \ref{fig:decay}. In the first zone, the one closest to the robot, the terrain analysis voxels don't get modified but can only get added. This is done to ensure that the robot doesn't forget obstacles when they get closer than the minimum distance the LIDAR can measure. This value was set to $0.1\,\text{m}$ for the quadruped for example.
         The second zone is the zone within which a voxel that has not been hit by the LIDAR for a certain amount of time $s$ get removed. This ensures that the robot doesn't get stopped indefinitely by obstacles that have been removed from the point cloud, like in the case of a human passing by. The third and final zone is the zone within which we clear any terrain voxel present. This is done to ensure that the computation time and memory usage of the terrain analysis doesn't grow indefinitely. This value was set to $8\,\text{m}$ for the regular terrain analysis, and $30\,\text{m}$ for the extended terrain analysis for the quadruped.
         
+        Both configuration parameters can be seen in their respective launch files in the Listings \ref{lst:terrain_analysis_launch} and \ref{lst:terrain_analysis_ext_launch}.
+
         Currently, the two terrain analysis are done in parallel, executing the same calculations multiple times. An area of improvement would be to combine both to reduce the total computation time.
+
+
 
     \subsection{Planning}
 
@@ -811,7 +842,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
             \resizebox{0.75\textwidth}{!}{%
             \input{graphs/pointcloudtolaserscan.tex}
             }   
-            \caption{Conversion from a 3D pointcloud to a 2D scan}
+            \caption{Conversion from a 3D point cloud to a 2D scan}
             \label{fig:pointcloud_to_laserscan}
         \end{figure}
         
@@ -821,17 +852,15 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         The local path planning in a 3D environment makes use of the Falco paper \cite{zhang2020falco}. In this paper, a method is proposed where the environment is considered deterministically known within a certain range, usually the range of the LIDAR, and probabilistically known beyond the sensor's range. This contrasts with usual methods that require an online search of a graph that needs updating at every sensor reading. The proposed method by Ji Shang et al. eliminates the need for the online search, favoring a path that maximizes the likelihood to reach the goal, instead of selecting the shortest path like traditional methods.
 
-        %! add reference to figure
-        %TODO : add a figure of the local planner paths 
         \begin{figure}[H]
             \centering
             \includegraphics[width=0.75\textwidth]{Images/free_paths.png}
-            \caption{Considered paths by the local planner in blue, with terrain analysis pointcloud, the robot is represented as a set of transformed axis}
+            \caption{Considered paths by the local planner in blue, with terrain analysis point cloud, the robot is represented as a set of transformed axis}
             \label{fig:local_planner_paths}
         \end{figure}
 
 
-        The local planner uses the terrain analysis mentioned in section \ref{section:terrain_analysis} to determine the navigable areas. It also subscribes to the odometry, referred to as "/state\_estimation" in Figure \ref{fig:local_planner}, and the registered scan. Its main goal is obtained from the topic "/way\_point" that is generated by the global planner. The local planner then publishes the best path to the topic "/path" that is used by the controller to move the robot, as well as all free paths considered on the topic "/free\_paths". As can be seen in Figure \ref{fig:local_planner}, the local planner also makes sure to only consider paths that are within the exploration boundary if one is defined by subscribing to the topic "/exploration\_boundary". The free paths considered by the local planner can be seen in Figure \ref{fig:local_planner_paths}.
+        The local planner uses the terrain analysis mentioned in section \ref{section:terrain_analysis} to determine the navigable areas. It also subscribes to the odometry, referred to as "/state\_estimation" in Figure \ref{fig:local_planner}, and the registered scan. Its main goal is obtained from the topic "/way\_point" that is generated by the global planner. The local planner then publishes the best path to the topic "/path" that is used by the path follower node to move the robot, as well as all free paths considered on the topic "/free\_paths". As can be seen in Figure \ref{fig:local_planner}, the local planner also makes sure to only consider paths that are within the exploration boundary if one is defined by subscribing to the topic "/exploration\_boundary". The free paths considered by the local planner can be seen in Figure \ref{fig:local_planner_paths}.
 
         Setting the correct margin of inflation for the obstacles and the min/max obstacle height for the real robot was a challenge. The margin needed to be large enough to not run into walls and obstacles, but small enough so that the planner would go through tight doorways and passages. 
 
@@ -854,6 +883,8 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         % \end{figure}
 
         % TODO also add the path following node explaination
+
+        To transform this selected path in a velocity command, a node called "path\_follower" is used and subscribes to the "/path" topic. This node then takes the odometry of the robot, and create a command velocity by limiting the maximum speed, the acceleration, and deceleration for both the linear and angular commands. This node also makes sure that the robot doesn't go backwards, even though the robot is able to do so, collisions are more frequent backward as the terrain and collision map don't get updated as they are in the blind spot of the LIDAR.
         
         
         \subsubsection{Comparison of 3D Planning Algorithms}
@@ -862,13 +893,13 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         
         Node-based algorithms, including A* and its derivatives, are renowned for their proven optimality under specific conditions. These algorithms operate by exploring nodes in a predefined graph and are highly effective in dynamic environments. Variants such as Theta* improve upon A* by generating paths with realistic shapes better suited for real-world terrains. However, their reliance on dense grids for 3D environments can lead to significant computational overhead, especially in cluttered or expansive workspaces.
         
-        Bioinspired algorithms, such as Ant Colony Optimization (ACO) and Particle Swarm Optimization (PSO), draw inspiration from natural phenomena to address complex, unstructured environments. These methods excel in solving NP-hard problems and can adapt well to challenging scenarios. Despite their robustness, they often require extensive computational resources and careful parameter tuning to achieve optimal results.
+        Bioinspired algorithms, such as Ant Colony Optimization \cite{brand2010ant} (ACO) and Particle Swarm Optimization \cite{kang2008path} (PSO), draw inspiration from natural phenomena to address complex, unstructured environments. These methods excel in solving NP-hard problems and can adapt well to challenging scenarios. Despite their robustness, they often require extensive computational resources and careful parameter tuning to achieve optimal results.
         
-        Mathematical model-based algorithms provide rigorously defined solutions by incorporating kinodynamic constraints into their formulations. While these methods offer precise paths and control mechanisms, their dependence on accurate environmental models and high computational costs can limit their practicality in real-time applications.
+        Mathematical model-based algorithms provide rigorously defined solutions by incorporating kinodynamic constraints into their formulations. While these methods offer precise paths and control mechanisms, their dependence on accurate environmental models and high computational costs can limit their practicality in real-time applications. The local path planner described in section \ref{section:local_path_planning} is an example of a model-based algorithm that generates kinodynamically feasible paths.
         
         Finally, hybrid or multifusion algorithms combine elements from multiple approaches, such as integrating A* with RRT*, to leverage the complementary strengths of individual methods. These hybrid strategies excel in balancing adaptability and computational efficiency but may introduce additional complexity in their implementation and fine-tuning.
         
-        The choice of algorithm depends largely on the specific requirements of the task, including computational efficiency, environmental adaptability, and the precision needed for the robotic application.
+        The choice of algorithm depends largely on the specific requirements of the task, including computational efficiency, environmental adaptability, and the precision needed for the robotic application. The represention of the world also plays an important factor in the choice of algorithm, as some algorithms are better suited for grid-based representations or graph-based representations, while others are more adapted to point cloud representations.
         
 
         
@@ -879,7 +910,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         
         \subsubsection{Metrics for exploration}
         % show how we calculate the exploration rate using the tools provided in the TARE planner
-        % explain the need for a pre-recorded pointcloud of the area we wish to explore
+        % explain the need for a pre-recorded point cloud of the area we wish to explore
         
         Exploration efficiency can be quantified by the exploration rate, which measures the amount of new information gathered by a robot over a period of time. This metric can be defined as either the surface area or volume of the environment covered by the aggregation of all sensor readings over time. The exploration rate is crucial for optimizing the efficiency of robotic exploration missions, as it directly impacts the speed and thus the time required to fully map an environment. 
 
@@ -891,8 +922,9 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         \subsubsection{TARE planner}
         % go in details about the process that the TARE-planner uses to explore and the motivations for the original creation of this planner (darpa sub teranean chaleneg)
+        \label{section:tare_planner}
 
-        TARE \cite{tare}, is a hierarchical framework for exploring unknown 3D environment. This planner was designed for Carnegie Mellon University's participation at the 2021 DARPA subterranean challenge \cite{darpa_subterranean_challenge}. In Figure \ref{fig:tare_darpa_exploration}, the exploration of one of DARPA's environments  can be seen explored by tare planner. The planner doesn't use any prerecorded point cloud for exploration, but uses a viewpoint candidate method for exploration. The planner is able to explore large environments by building a reduced local path, while maintaining a coarse global path.
+        TARE \cite{tare}, is a hierarchical framework for exploring unknown 3D environment. This planner was designed for Carnegie Mellon University's participation at the 2021 DARPA subterranean challenge \cite{darpa_subterranean_challenge}. In Figure \ref{fig:tare_darpa_exploration}, the exploration of one of DARPA's environments  can be seen explored by the TARE planner. The planner doesn't use any prerecorded point cloud for exploration, but uses a viewpoint candidate method for exploration. The planner is able to explore large environments by building a reduced local path, while maintaining a coarse global path.
 
         Viewpoint candidates are generated by the planner within the local planning horizon (see Figure \ref{fig:tare_local_global}), and on valid positions of the terrain map. Each candidate is then evaluated for the amount of information it would bring to the map. This is done by evaluating the uncovered surface of the map, and evaluating the amount of those areas the viewpoint candidate would cover from the LIDAR's perspective.  
 
@@ -914,7 +946,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
         \end{figure}
 
 
-        A test was performed with the TARE planner in a real environment to showcase the exploration capabilities of the planner. The environment chosen is the ground floor of the Alumni Hall at IIT that features a concrete testing lab, a machine shop, a classroom, and two entryways. In Figure \ref{fig:tare_iit_exploration}, the exploration of the Alumni Hall can be seen. The planner was able to explore most of the environment in a less than 10 minutes. It however struggled to go through tight passages, like certain doorways, but did not require any manual interventions. The resulting map captured by the LIDAR of the GO2 can be seen in Figure \ref{fig:tare_iit_map}.
+        A test was performed with the TARE planner in a real environment to showcase the exploration capabilities of the planner. The environment chosen is the ground floor of the Alumni Hall at IIT that features a concrete testing lab, a machine shop, a classroom, and two entryways. In Figure \ref{fig:tare_iit_exploration}, the quadruped performing the exploration of the Alumni Hall can be seen. The planner was able to explore most of the environment in a less than 10 minutes. It however struggled to go through tight passages, like certain doorways, but did not require any manual interventions. The resulting map captured by the LIDAR of the GO2 can be seen in Figure \ref{fig:tare_iit_map}.
 
 
         \begin{figure}[H]
@@ -942,10 +974,10 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         The MUI-TARE planner \cite{yan2023mui} (Multi-agent TARE with Unknown Initial position) is an extended version of the previously described TARE planner that was used by the CMU team during the multi robot exploration stage of the DARPA SubT challenge. It uses AutoMerge \cite{yin2023automerge}, a framework meant for merging multiple large scale point clouds. MUI-TARE follows the hierarchical exploration strategy of TARE, where the entire exploration path is considered, maximizing the exploration rate.
 
-        Until maps get initially merged, and their relative positions to one another is unknown, each agent plans its exploration independently. Once the maps are merged, the agents then cooperate in the exploration effort, by continuously sharing their maps. If communication is lost, the agents will resynchronize their maps by going back to a known meeting point. The meeting point is continuously updated while communications are active, but only after a certain amount of time has passed without communication will the agents go back to the last known meeting point. This ensures that the agents can continue to explore distant areas without having to go back to the meeting point too often. 
+        Until the maps get initially merged, and their relative positions to one another is unknown, each agent plans its exploration independently. Once the maps are merged, the agents then cooperate in the exploration effort, by continuously sharing their maps. If communication is lost, the agents will resynchronize their maps by going back to a known meeting point. The meeting point is continuously updated while communications are active, but only after a certain amount of time has passed without communication will the agents go back to the last known meeting point. This ensures that the agents can continue to explore distant areas without having to go back to the meeting point too often. 
 
 
-        As a simulation environment is provided, the MUI-TARE planner was first tested in simulation, allowing myself to understand the planner and to test the planner in a controlled environment. Such test can be seen in Figure \ref{fig:mui_tare_simulation}. The simulation environment is provided as a Docker image
+        As a simulation environment is provided, the MUI-TARE planner was first tested in simulation, allowing myself to understand the planner and to test the planner in a controlled environment. Such test can be seen in Figure \ref{fig:mui_tare_simulation}. The simulation environment is provided as a Docker image which made it really easy to test and reproduce the results.
 
 
 
@@ -977,7 +1009,7 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
 
         \subsubsection{Gazebo}
-            Gazebo is a well known simulation environment in the robotics community. It is widely used and has a large community. It is open source and has a lot of plugins available, for simulation sensors, motion platforms and more. As I was already familiar with it, I first looked at it to build a crude simulation of the 6 wheeled platform. Thanks to the use of ROS2 and ROS2-control for the drive train, I was able to quickly build a simulation of the platform. 
+            Gazebo is a well known simulation environment in the robotics community. It is widely used and has a large community. It is open source and has a lot of plugins available, for simulating sensors, motion platforms and more. As I was already familiar with it, I first looked at it to build a crude simulation of the 6 wheeled platform. Thanks to the use of ROS2 and ROS2-control for the drive train, I was able to quickly build a simulation of the platform. 
 
             I was also able to find a working simulation of the Livox Mid-360 LIDAR sensor we chose for every platform. The package \cite{livox_lidar_simulation_fork} was a fork of the original simulation package from Livox \cite{livox_laser_simulation} and was modified to work with the specific LIDAR we are using.
             
@@ -1063,92 +1095,15 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
         Gazebo has a built-in IMU sensor that can be added to the robot's description, which our mapping algorithm needs for point cloud deskewing and alignment as discussed in \ref{section:lidar_inertial_odometry}. The IMU sensor can be configured to have a certain update rate, noise, and bias. Noise can be added to the IMU sensor to simulate the noise in the IMU data. An example of an IMU sensor configuration can be seen in listing \ref{lst:imu_sensor}.
 
-    \vspace{10pt }
-\begin{minipage}{0.9\textwidth}
-\begin{lstlisting}[style=xmlStyle, caption={IMU Sensor Configuration}, label={lst:imu_sensor}]
-<gravity>true</gravity>
-<sensor name="imu_sensor" type="imu">
-    <always_on>true</always_on>
-    <update_rate>100</update_rate>
-    <visualize>true</visualize>
-    <topic>default_topic</topic>
-    <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
-    <topicName>imu</topicName>
-    <bodyName>imu</bodyName>
-    <updateRateHZ>100.0</updateRateHZ>
-    <xyzOffset>0 0 0</xyzOffset>
-    <rpyOffset>0 0 0</rpyOffset>
-    <frameName>imu</frameName>
-    <initial_orientation_as_reference>false</initial_orientation_as_reference>
-    <noise>
-        <type>gaussian</type>
-        <rate>
-            <x>0.01</x>
-            <y>0.01</y>
-            <z>0.01</z>
-        </rate>
-        <acceleration>
-            <x>0.01</x>
-            <y>0.01</y>
-            <z>0.01</z>
-        </acceleration>
-    </noise>
-    </plugin>
-</sensor>
-\end{lstlisting}
-\end{minipage}
 
         \subsubsection{Camera}
 
         In gazebo, cameras can be simulated by modifying the robot's description and adding a sensor tag to the robot's description. The camera sensor can be configured to have a certain field of view, resolution, and clipping planes. The camera sensor can also be configured to always be on, to have a certain update rate, to visualize the image, and to publish the image to a certain topic. An example of a camera sensor configuration can be seen in listing \ref{lst:camera_sensor}.
 
-\vspace{10pt }
-\begin{minipage}{0.9\textwidth}
-\begin{lstlisting}[style=xmlStyle, caption={Camera Sensor Configuration}, label={lst:camera_sensor}]
-<sensor name="camera" type="camera">
-    <camera>
-        <horizontal_fov>1.047</horizontal_fov>
-        <image>
-            <width>320</width>
-            <height>240</height>
-        </image>
-    </camera>
-    <always_on>1</always_on>
-    <update_rate>30</update_rate>
-    <visualize>true</visualize>
-    <topic>camera</topic>
-</sensor>
-\end{lstlisting}
-\end{minipage}
-
-
 
         Similarly, a depth camera can be simulated, as we intend to add am Intel RealSense D435 to the quadruped platform. The depth camera can be configured to have a certain field of view, resolution, clipping planes, and update rate. As depth camera tend to be noisy in the depth data, the noise can be added to the depth data. An example of a depth camera sensor configuration can be seen in listing \ref{lst:depth_camera_sensor}. Here, the noise is set to be Gaussian with a mean of 0.0 and a standard deviation of 0.01. Those values were not measured but are a good starting point for the simulation. In the case of the depth camera, the clipping planes are set to 0.05 and 8.0 meters, as the depth camera is not able to see further than 8 meters. The depth camera is also configured to have a reduced resolution of just 640x480 pixels. Both color and depth views can be seen in Figure \ref{fig:cameras_simulation_view}.
         
-\vspace{10pt }
-\begin{minipage}{0.9\textwidth}      
-\begin{lstlisting}[style=xmlStyle, caption={Depth Camera Sensor Configuration}, label={lst:depth_camera_sensor}]
-<sensor name="camera" type="depth">
-    <visualize>true</visualize>
-    <update_rate>10</update_rate>
-    <camera>
-        <horizontal_fov>1.089</horizontal_fov>
-        <image>
-            <format>R8G8B8</format>
-            <width>640</width>
-            <height>480</height>
-        </image>
-        <clip>
-            <near>0.05</near>
-            <far>8.0</far>
-        </clip>
-    </camera>
-    <plugin name="camera_controller" 
-    filename="libgazebo_ros_camera.so">
-    </plugin>
-</sensor>
-\end{lstlisting}
-\end{minipage}
+
 
 \begin{figure}[H]
     \centering
@@ -1226,23 +1181,33 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
     The work on making the TARE planner work with the Unitree GO2 will also help accelerate the development of exploration algorithms for the quadruped platform, with our solution being a low cost and open source alternative to other solutions based on expensive hardware and proprietary software. The configuration we used for the TARE planner with the GO2 can be found in Listing \ref{lst:tare_config}.
 
-    % TODO : add in annex working configuration of TARE for a GO2
 
 
 \newpage
 \section{Conclusion}
 %\addcontentsline{toc}{section}{Conclusion}
 
-    % TODO : Write the conclusion
-    Conclusion     
+    The work performed during this internship has laid the ground for future research at the lab on autonomous robotics tasks that will augment the construction site. We propose a low cost autonomous quadruped and wheeled robot capable of navigating challenging terrain in construction sites, while mapping the environment.
+
+    Both platforms are ready to accommodate other experiments by mounting cameras, robotics arm or other actuators. The work accomplished on the quadruped platform could also be transferred to a more capable platform to navigate stairs and other challenging terrain. The work on the wheeled platform could be used to develop a more robust and capable platform for mapping and exploration.
+
+    Work remains to be done on the quadcopter, as the current state is not suitable for autonomous flight. But the work done on the other platforms will help in the development of the autonomous flight capabilities of the quadcopter. Furthermore, work on communication between the platforms and the quadcopter will be needed to coordinate the different platforms in a multi agent exploration task. Several communication methods were considered, but the choice of communication method will depend on the environment and the task at hand.
+
+    The simulation environment developed during this internship will be used to test the coordination of the different platforms in a multi agent exploration task with stable communication, but work needs to be done to simulate the loss of communication between the different platforms. More environments also need to be developed to test the exploration algorithms in different scenarios. We can also use this simulation as a test platform for continuous testing as the simulation can be run on a headless server.
+
+    Finally, the contributions to open source projects will help the community in developing better tools for robotics development. The work on the GO2 battery and firmware will help in the development of an open source firmware for the GO2, and the work on the TARE planner will help in the development of exploration algorithms for the quadruped platform.
+
+    As the lab is developing many experiences around virtual and mixed reality, we can also think about developing a virtual reality environment to visualize the simulation or the data captured by the robot. Specifically, work on overlaying the point cloud captured by the agents in mixed reality could allow for better review of the acquired data.
+
+    
 
 \newpage
 \bibliography{refs} % Entries are in the refs.bib file
 \addcontentsline{toc}{section}{Bibliography}
 
-\newpage
-\addcontentsline{toc}{section}{Glossaire}
-\printnoidxglossaries %glossaire, dans le fichier lexique.tex
+%\newpage
+%\addcontentsline{toc}{section}{Glossaire}
+%\printnoidxglossaries %glossaire, dans le fichier lexique.tex
 
 \newpage
 \addcontentsline{toc}{section}{List of figures}
@@ -1250,11 +1215,33 @@ for Continuous Digital Twin Creation\vspace{10pt}\\
 
 
 \newpage
-\section*{Annexe}
-\addcontentsline{toc}{section}{Annexe}
+\section*{Appendix}
+\addcontentsline{toc}{section}{Appendix}
 % Uncomment input annexe when needed
 \input{annexe}
 
+\newpage
+\thispagestyle{empty}
+\section*{Résumé du stage}
+
+\noindent
+Illinois Institute of Technology (IIT)
+
+\noindent
+IConSense lab
+
+\noindent
+Chicago, États-Unis
+
+\begin{center}
+\textbf{Développement d'une solution robotique multi-agents pour l'exploration et la cartographie d'environnements de construction}
+\end{center}
+
+Ce stage, réalisé à l'Illinois Institute of Technology (IIT) à Chicago, avait pour objectif principal de développer une solution robotique multi-agents capable d'explorer et de cartographier des environnements de construction de manière autonome. L'objectif était de faciliter la création de jumeaux numériques continus, en réponse aux limites des technologies actuelles, comme les scanners 3D fixes.
+
+Durant ce stage, trois plateformes robotiques ont été mises en œuvre : un robot à roues, un quadrupède (Unitree GO2) et un drone. Chacune a nécessité des modifications mécaniques, électriques et logicielles, intégrant des capteurs avancés tels que le LIDAR Livox Mid-360 et des ordinateurs embarqués Nvidia Jetson Orin. Ces plateformes ont été testées pour réaliser une cartographie autonome et précise en combinant des algorithmes de SLAM et de planification de trajectoire.
+
+En parallèle, des simulations ont été effectuées avec des outils comme Gazebo pour valider les algorithmes avant les tests physiques. Malgré des contraintes de temps empêchant l'intégration complète de certaines fonctionnalités, le stage a démontré des progrès significatifs vers des solutions robotiques innovantes pour les environnements de construction.
 
 
     
